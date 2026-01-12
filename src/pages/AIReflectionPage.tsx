@@ -1,13 +1,17 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSearchParams } from 'react-router-dom';
 import { BottomNav } from '@/components/BottomNav';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChevronLeft, MessageCircle, Send, Loader2, AlertCircle, Sparkles } from 'lucide-react';
+import { ChevronLeft, MessageCircle, Send, Loader2, AlertCircle, Sparkles, Crown, LogIn } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useSubscription } from '@/hooks/useSubscription';
+import { PremiumBanner } from '@/components/PremiumBanner';
+import { AuthModal } from '@/components/AuthModal';
 
 interface AIResponse {
   acknowledgment: string;
@@ -33,13 +37,56 @@ interface Message {
 const FREE_DAILY_LIMIT = 3;
 
 const AIReflectionPage = () => {
+  const [searchParams] = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [dailyCount, setDailyCount] = useState(0);
-  const [isPremium] = useState(false); // TODO: Implement premium check
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+  
+  const { 
+    isPremium, 
+    isLoading: isSubLoading, 
+    subscriptionEnd,
+    openCheckout,
+    openCustomerPortal,
+    checkSubscription
+  } = useSubscription();
+
+  // Check for checkout success
+  useEffect(() => {
+    const checkoutStatus = searchParams.get('checkout');
+    if (checkoutStatus === 'success') {
+      toast({
+        title: 'Welcome to Premium!',
+        description: 'You now have unlimited AI reflections.',
+      });
+      checkSubscription();
+    } else if (checkoutStatus === 'canceled') {
+      toast({
+        title: 'Checkout canceled',
+        description: 'You can upgrade anytime.',
+      });
+    }
+  }, [searchParams, checkSubscription, toast]);
+
+  // Check auth status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    checkAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     // Load daily count from localStorage
@@ -74,6 +121,35 @@ const AIReflectionPage = () => {
 
   const canSendMessage = isPremium || dailyCount < FREE_DAILY_LIMIT;
   const remainingMessages = isPremium ? 'Unlimited' : `${FREE_DAILY_LIMIT - dailyCount} remaining today`;
+
+  const handleUpgrade = async () => {
+    if (!isAuthenticated) {
+      setShowAuthModal(true);
+      return;
+    }
+    
+    try {
+      await openCheckout();
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to open checkout',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const handleManage = async () => {
+    try {
+      await openCustomerPortal();
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to open subscription management',
+        variant: 'destructive',
+      });
+    }
+  };
 
   const sendMessage = async () => {
     if (!input.trim() || isLoading || !canSendMessage) return;
@@ -157,17 +233,47 @@ const AIReflectionPage = () => {
               </p>
             </div>
           </div>
-          {!isPremium && (
-            <div className="flex items-center gap-1 px-2 py-1 bg-accent/20 rounded-full">
-              <Sparkles className="w-3 h-3 text-accent" />
-              <span className="text-xs text-accent font-medium">Free</span>
-            </div>
-          )}
+          <div className="flex items-center gap-2">
+            {!isAuthenticated ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAuthModal(true)}
+                className="text-muted-foreground hover:text-foreground"
+              >
+                <LogIn className="w-4 h-4 mr-1" />
+                Sign in
+              </Button>
+            ) : isPremium ? (
+              <div className="flex items-center gap-1 px-2 py-1 bg-accent/20 rounded-full">
+                <Crown className="w-3 h-3 text-accent" />
+                <span className="text-xs text-accent font-medium">Premium</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 px-2 py-1 bg-secondary/50 rounded-full">
+                <Sparkles className="w-3 h-3 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground font-medium">Free</span>
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
+      {/* Premium Banner (only show when not premium and has few messages left) */}
+      {!isPremium && dailyCount >= 1 && (
+        <div className="px-4 mb-4 flex-shrink-0 max-w-lg mx-auto w-full">
+          <PremiumBanner
+            isPremium={isPremium}
+            isLoading={isSubLoading}
+            subscriptionEnd={subscriptionEnd}
+            onUpgrade={handleUpgrade}
+            onManage={handleManage}
+          />
+        </div>
+      )}
+
       {/* Disclaimer */}
-      <div className="px-4 mb-4 flex-shrink-0">
+      <div className="px-4 mb-4 flex-shrink-0 max-w-lg mx-auto w-full">
         <div className="bg-secondary/50 rounded-lg p-3 flex items-start gap-2">
           <AlertCircle className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
           <p className="text-xs text-muted-foreground">
@@ -285,12 +391,19 @@ const AIReflectionPage = () => {
         <div className="max-w-lg mx-auto">
           {!canSendMessage ? (
             <Card className="bg-secondary/80">
-              <CardContent className="p-4 text-center">
-                <p className="text-sm text-foreground mb-2">
+              <CardContent className="p-4 text-center space-y-3">
+                <p className="text-sm text-foreground">
                   You've used your free messages for today
                 </p>
+                <Button
+                  onClick={handleUpgrade}
+                  className="sakina-gradient-primary text-primary-foreground"
+                >
+                  <Crown className="w-4 h-4 mr-2" />
+                  Upgrade for Unlimited
+                </Button>
                 <p className="text-xs text-muted-foreground">
-                  Come back tomorrow, or upgrade for unlimited reflections
+                  Or come back tomorrow for 3 more free messages
                 </p>
               </CardContent>
             </Card>
@@ -319,6 +432,12 @@ const AIReflectionPage = () => {
           )}
         </div>
       </div>
+
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSuccess={checkSubscription}
+      />
 
       <BottomNav />
     </div>

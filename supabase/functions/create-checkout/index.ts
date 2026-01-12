@@ -12,7 +12,7 @@ const logStep = (step: string, details?: any) => {
   console.log(`[CREATE-CHECKOUT] ${step}${detailsStr}`);
 };
 
-// Sakina Premium - $4.99/month
+// Sabrify Premium - $4.99/month
 const PREMIUM_PRICE_ID = "price_1Soq8yEOB7eaacvnOgtOIH5a";
 
 serve(async (req) => {

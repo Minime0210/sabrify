@@ -117,10 +117,11 @@ serve(async (req) => {
     });
 
     if (emailResponse.error) {
-      throw new Error("Failed to send confirmation email");
+      logStep("Resend error", { error: emailResponse.error });
+      throw new Error(`Failed to send confirmation email: ${emailResponse.error.message}`);
     }
 
-    logStep("Deletion confirmation email sent");
+    logStep("Deletion confirmation email sent", { id: emailResponse.data?.id });
 
     return new Response(
       JSON.stringify({ 

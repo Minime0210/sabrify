@@ -3,11 +3,11 @@ import { Home, Heart, Waves, Leaf, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const navItems = [
+  { path: '/profile', icon: User, label: 'Profile' },
   { path: '/', icon: Home, label: 'Home' },
   { path: '/calm', icon: Waves, label: 'Calm' },
   { path: '/sabr', icon: Leaf, label: 'Sabr' },
   { path: '/dhikr', icon: Heart, label: 'Dhikr' },
-  { path: '/profile', icon: User, label: 'Profile' },
 ];
 
 export const BottomNav = () => {

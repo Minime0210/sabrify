@@ -143,8 +143,13 @@ const AIReflectionPage = () => {
 
   // Chat is ephemeral - removed sessionStorage persistence for privacy
 
-  const canSendMessage = isPremium || dailyCount < FREE_DAILY_LIMIT;
-  const remainingMessages = isPremium ? 'Unlimited' : `${FREE_DAILY_LIMIT - dailyCount} remaining today`;
+  // Require authentication to send messages (protects AI API from abuse)
+  const canSendMessage = isAuthenticated && (isPremium || dailyCount < FREE_DAILY_LIMIT);
+  const remainingMessages = !isAuthenticated 
+    ? 'Sign in to start' 
+    : isPremium 
+      ? 'Unlimited' 
+      : `${FREE_DAILY_LIMIT - dailyCount} remaining today`;
 
   const handleUpgrade = async () => {
     if (!isAuthenticated) {
@@ -436,7 +441,25 @@ const AIReflectionPage = () => {
       {/* Input */}
       <div className="fixed bottom-20 left-0 right-0 p-4 bg-gradient-to-t from-background via-background to-transparent">
         <div className="max-w-lg mx-auto">
-          {!canSendMessage ? (
+          {!isAuthenticated ? (
+            <Card className="bg-secondary/80">
+              <CardContent className="p-4 text-center space-y-3">
+                <p className="text-sm text-foreground">
+                  Sign in to start your reflection journey
+                </p>
+                <Button
+                  onClick={() => setShowAuthModal(true)}
+                  className="sakina-gradient-primary text-primary-foreground"
+                >
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Sign In to Continue
+                </Button>
+                <p className="text-xs text-muted-foreground">
+                  Get 3 free reflections daily
+                </p>
+              </CardContent>
+            </Card>
+          ) : !canSendMessage ? (
             <Card className="bg-secondary/80">
               <CardContent className="p-4 text-center space-y-3">
                 <p className="text-sm text-foreground">

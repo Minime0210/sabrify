@@ -8,12 +8,32 @@ import { ChevronLeft, Leaf, Calendar, Heart, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { format, isToday as isDateToday, parseISO } from 'date-fns';
 import { getDailySabrPrompt, getLocalDateKey, isToday as isLocalToday } from '@/lib/dailyContent';
+import { useToast } from '@/hooks/use-toast';
 
 interface SabrReflection {
   id: string;
   date: string;
   content: string;
 }
+
+// Security constants for input validation
+const MAX_REFLECTION_LENGTH = 2000;
+const MAX_REFLECTIONS_STORED = 100;
+
+// Validate reflection structure
+const isValidReflection = (obj: unknown): obj is SabrReflection => {
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    'id' in obj &&
+    'date' in obj &&
+    'content' in obj &&
+    typeof (obj as SabrReflection).id === 'string' &&
+    typeof (obj as SabrReflection).date === 'string' &&
+    typeof (obj as SabrReflection).content === 'string' &&
+    (obj as SabrReflection).content.length <= MAX_REFLECTION_LENGTH
+  );
+};
 
 const SabrTrackerPage = () => {
   const [reflections, setReflections] = useState<SabrReflection[]>([]);
@@ -22,42 +42,64 @@ const SabrTrackerPage = () => {
   const [hasReflectedToday, setHasReflectedToday] = useState(false);
   const [pastReflection, setPastReflection] = useState<SabrReflection | null>(null);
   const [dailyPrompt, setDailyPrompt] = useState(getDailySabrPrompt());
+  const { toast } = useToast();
 
   useEffect(() => {
     // Set daily prompt
     setDailyPrompt(getDailySabrPrompt());
     
-    // Load reflections from localStorage
+    // Load reflections from localStorage with validation
     const stored = localStorage.getItem('sakina-sabr-reflections');
     if (stored) {
-      const parsed: SabrReflection[] = JSON.parse(stored);
-      setReflections(parsed);
-      
-      // Check if user has reflected today (using local timezone)
-      const todayKey = getLocalDateKey();
-      const todayReflection = parsed.find(r => r.date.startsWith(todayKey));
-      setHasReflectedToday(!!todayReflection);
-      
-      // Occasionally surface a past reflection (20% chance)
-      if (parsed.length > 1 && Math.random() < 0.2) {
-        const oldReflections = parsed.filter(r => !isDateToday(parseISO(r.date)));
-        if (oldReflections.length > 0) {
-          setPastReflection(oldReflections[Math.floor(Math.random() * oldReflections.length)]);
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          // Validate each reflection and filter invalid ones
+          const validated = parsed.filter(isValidReflection).slice(0, MAX_REFLECTIONS_STORED);
+          setReflections(validated);
+          
+          // Check if user has reflected today (using local timezone)
+          const todayKey = getLocalDateKey();
+          const todayReflection = validated.find(r => r.date.startsWith(todayKey));
+          setHasReflectedToday(!!todayReflection);
+          
+          // Occasionally surface a past reflection (20% chance)
+          if (validated.length > 1 && Math.random() < 0.2) {
+            const oldReflections = validated.filter(r => !isDateToday(parseISO(r.date)));
+            if (oldReflections.length > 0) {
+              setPastReflection(oldReflections[Math.floor(Math.random() * oldReflections.length)]);
+            }
+          }
         }
+      } catch (e) {
+        console.error('Failed to parse reflections:', e);
+        localStorage.removeItem('sakina-sabr-reflections');
       }
     }
   }, []);
 
   const saveReflection = () => {
-    if (!reflection.trim()) return;
+    const trimmed = reflection.trim();
+    if (!trimmed) return;
+
+    // Validate length before saving
+    if (trimmed.length > MAX_REFLECTION_LENGTH) {
+      toast({
+        title: 'Reflection too long',
+        description: `Please keep reflections under ${MAX_REFLECTION_LENGTH} characters.`,
+        variant: 'destructive',
+      });
+      return;
+    }
 
     const newReflection: SabrReflection = {
       id: Date.now().toString(),
       date: new Date().toISOString(),
-      content: reflection.trim()
+      content: trimmed
     };
 
-    const updated = [newReflection, ...reflections];
+    // Limit storage size to prevent storage exhaustion
+    const updated = [newReflection, ...reflections].slice(0, MAX_REFLECTIONS_STORED);
     setReflections(updated);
     localStorage.setItem('sakina-sabr-reflections', JSON.stringify(updated));
     

@@ -64,7 +64,7 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     if (!LOVABLE_API_KEY) {
       console.error('LOVABLE_API_KEY is not configured');
-      throw new Error('AI service is not configured');
+      throw new Error('Service configuration error');
     }
 
     let userPrompt = message;
@@ -107,7 +107,7 @@ serve(async (req) => {
       }
       const errorText = await response.text();
       console.error('AI gateway error:', response.status, errorText);
-      throw new Error('Failed to get AI response');
+      throw new Error('AI service error');
     }
 
     const data = await response.json();
@@ -143,9 +143,12 @@ serve(async (req) => {
     );
 
   } catch (error) {
+    // Log full error details server-side only
     console.error('Error in ai-reflection function:', error);
+    
+    // Return generic error message to client
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : 'An unexpected error occurred' }),
+      JSON.stringify({ error: 'Service temporarily unavailable. Please try again.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

@@ -71,7 +71,14 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR in create-checkout", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    
+    // Return generic error to client
+    let clientMessage = 'Service temporarily unavailable. Please try again.';
+    if (errorMessage.includes('auth') || errorMessage.includes('User not authenticated')) {
+      clientMessage = 'Authentication required. Please sign in.';
+    }
+    
+    return new Response(JSON.stringify({ error: clientMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

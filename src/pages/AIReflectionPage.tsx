@@ -36,6 +36,45 @@ interface Message {
 }
 
 const FREE_DAILY_LIMIT = 3;
+const MAX_CHAT_MESSAGES = 50;
+const MAX_MESSAGE_LENGTH = 2000;
+const MAX_REFLECTION_LENGTH = 2000;
+
+// Validate message structure
+const isValidMessage = (obj: unknown): obj is Message => {
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    'id' in obj &&
+    'role' in obj &&
+    'content' in obj &&
+    typeof (obj as Message).id === 'string' &&
+    ((obj as Message).role === 'user' || (obj as Message).role === 'assistant') &&
+    typeof (obj as Message).content === 'string' &&
+    (obj as Message).content.length <= MAX_MESSAGE_LENGTH * 2 // Allow more for AI responses
+  );
+};
+
+// Validate reflection structure for AI context
+interface SabrReflection {
+  id: string;
+  date: string;
+  content: string;
+}
+
+const isValidReflection = (obj: unknown): obj is SabrReflection => {
+  return (
+    obj !== null &&
+    typeof obj === 'object' &&
+    'id' in obj &&
+    'date' in obj &&
+    'content' in obj &&
+    typeof (obj as SabrReflection).id === 'string' &&
+    typeof (obj as SabrReflection).date === 'string' &&
+    typeof (obj as SabrReflection).content === 'string' &&
+    (obj as SabrReflection).content.length <= MAX_REFLECTION_LENGTH
+  );
+};
 
 const AIReflectionPage = () => {
   const [searchParams] = useSearchParams();
@@ -94,23 +133,15 @@ const AIReflectionPage = () => {
     const { count } = getDailyAIUsage();
     setDailyCount(count);
 
-    // Load chat history from session
-    const history = sessionStorage.getItem('sakina-ai-chat');
-    if (history) {
-      setMessages(JSON.parse(history));
-    }
+    // Chat is ephemeral for privacy - not persisted to storage
+    // This protects sensitive emotional/spiritual conversations
   }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  useEffect(() => {
-    // Save chat to session
-    if (messages.length > 0) {
-      sessionStorage.setItem('sakina-ai-chat', JSON.stringify(messages));
-    }
-  }, [messages]);
+  // Chat is ephemeral - removed sessionStorage persistence for privacy
 
   const canSendMessage = isPremium || dailyCount < FREE_DAILY_LIMIT;
   const remainingMessages = isPremium ? 'Unlimited' : `${FREE_DAILY_LIMIT - dailyCount} remaining today`;
@@ -145,25 +176,46 @@ const AIReflectionPage = () => {
   };
 
   const sendMessage = async () => {
-    if (!input.trim() || isLoading || !canSendMessage) return;
+    const trimmedInput = input.trim();
+    if (!trimmedInput || isLoading || !canSendMessage) return;
+
+    // Validate message length
+    if (trimmedInput.length > MAX_MESSAGE_LENGTH) {
+      toast({
+        title: 'Message too long',
+        description: `Please keep messages under ${MAX_MESSAGE_LENGTH} characters.`,
+        variant: 'destructive',
+      });
+      return;
+    }
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
-      content: input.trim()
+      content: trimmedInput
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    // Limit stored messages to prevent memory issues
+    setMessages(prev => [...prev.slice(-MAX_CHAT_MESSAGES + 1), userMessage]);
     setInput('');
     setIsLoading(true);
 
     try {
-      // Get past sabr reflections for context (with user consent implied by using the feature)
+      // Get past sabr reflections for context with validation
       const storedReflections = localStorage.getItem('sakina-sabr-reflections');
       let pastReflections: string[] = [];
       if (storedReflections) {
-        const parsed = JSON.parse(storedReflections);
-        pastReflections = parsed.slice(0, 3).map((r: any) => r.content);
+        try {
+          const parsed = JSON.parse(storedReflections);
+          if (Array.isArray(parsed)) {
+            pastReflections = parsed
+              .filter(isValidReflection)
+              .slice(0, 3)
+              .map((r: SabrReflection) => r.content);
+          }
+        } catch {
+          // Ignore parse errors for past reflections
+        }
       }
 
       const { data, error } = await supabase.functions.invoke('ai-reflection', {
@@ -188,7 +240,8 @@ const AIReflectionPage = () => {
         response: data
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      // Limit stored messages to prevent memory issues
+      setMessages(prev => [...prev.slice(-MAX_CHAT_MESSAGES + 1), assistantMessage]);
 
       // Update daily count with local timezone support
       const newCount = incrementAIUsage(dailyCount);
@@ -264,12 +317,15 @@ const AIReflectionPage = () => {
       )}
 
       {/* Disclaimer */}
-      <div className="px-4 mb-4 flex-shrink-0 max-w-lg mx-auto w-full">
+      <div className="px-4 mb-4 flex-shrink-0 max-w-lg mx-auto w-full space-y-2">
         <div className="bg-secondary/50 rounded-lg p-3 flex items-start gap-2">
           <AlertCircle className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
           <p className="text-xs text-muted-foreground">
             This assistant provides reflection and emotional support, not religious rulings or therapy.
           </p>
+        </div>
+        <div className="text-center text-xs text-muted-foreground/70">
+          💡 Your conversation is private and will be cleared when you refresh this page
         </div>
       </div>
 

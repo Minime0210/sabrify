@@ -170,7 +170,7 @@ const ProfilePage = () => {
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <h3 className="font-medium text-foreground">
-                    {isPremium ? 'Sakina Premium' : 'Free Plan'}
+                    {isPremium ? 'Sabrify Premium' : 'Free Plan'}
                   </h3>
                   {subLoading ? (
                     <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />

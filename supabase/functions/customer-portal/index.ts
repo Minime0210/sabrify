@@ -63,7 +63,16 @@ serve(async (req) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     logStep("ERROR in customer-portal", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    
+    // Return generic error to client
+    let clientMessage = 'Service temporarily unavailable. Please try again.';
+    if (errorMessage.includes('auth') || errorMessage.includes('Authentication')) {
+      clientMessage = 'Authentication failed. Please sign in again.';
+    } else if (errorMessage.includes('No Stripe customer')) {
+      clientMessage = 'No subscription found. Please subscribe first.';
+    }
+    
+    return new Response(JSON.stringify({ error: clientMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });

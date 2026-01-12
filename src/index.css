@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* Sakina Color Palette - Serene & Grounding */
+    /* Sabrify Color Palette - Serene & Grounding */
     --background: 40 30% 96%;
     --foreground: 160 20% 15%;
 
@@ -41,14 +41,14 @@
 
     --radius: 1rem;
 
-    /* Custom Sakina tokens */
-    --sakina-olive: 150 25% 35%;
-    --sakina-sage: 150 20% 45%;
-    --sakina-sand: 35 30% 88%;
-    --sakina-cream: 40 30% 96%;
-    --sakina-gold: 38 45% 70%;
-    --sakina-night: 220 30% 15%;
-    --sakina-calm-blue: 200 25% 60%;
+    /* Custom Sabrify tokens */
+    --sabrify-olive: 150 25% 35%;
+    --sabrify-sage: 150 20% 45%;
+    --sabrify-sand: 35 30% 88%;
+    --sabrify-cream: 40 30% 96%;
+    --sabrify-gold: 38 45% 70%;
+    --sabrify-night: 220 30% 15%;
+    --sabrify-calm-blue: 200 25% 60%;
 
     /* Gradients */
     --gradient-serene: linear-gradient(180deg, hsl(40 30% 96%) 0%, hsl(45 25% 92%) 100%);
@@ -105,13 +105,13 @@
     --input: 220 25% 20%;
     --ring: 150 30% 50%;
 
-    --sakina-olive: 150 30% 50%;
-    --sakina-sage: 150 25% 55%;
-    --sakina-sand: 35 20% 25%;
-    --sakina-cream: 40 25% 92%;
-    --sakina-gold: 38 40% 55%;
-    --sakina-night: 220 30% 10%;
-    --sakina-calm-blue: 200 30% 50%;
+    --sabrify-olive: 150 30% 50%;
+    --sabrify-sage: 150 25% 55%;
+    --sabrify-sand: 35 20% 25%;
+    --sabrify-cream: 40 25% 92%;
+    --sabrify-gold: 38 40% 55%;
+    --sabrify-night: 220 30% 10%;
+    --sabrify-calm-blue: 200 30% 50%;
 
     --gradient-serene: linear-gradient(180deg, hsl(220 30% 10%) 0%, hsl(220 28% 14%) 100%);
     --gradient-calm: linear-gradient(135deg, hsl(150 30% 45%) 0%, hsl(150 25% 55%) 100%);
@@ -159,23 +159,29 @@
 }
 
 @layer components {
-  .sakina-card {
+  .sabrify-card {
     @apply bg-card rounded-2xl p-6;
     box-shadow: var(--shadow-card);
   }
 
-  .sakina-card-elevated {
+  .sabrify-card-elevated {
     @apply bg-card rounded-3xl p-8;
     box-shadow: var(--shadow-elevated);
   }
 
-  .sakina-gradient-bg {
+  .sabrify-gradient-bg {
     background: var(--gradient-serene);
   }
 
-  .sakina-gradient-primary {
+  .sabrify-gradient-primary {
     background: var(--gradient-calm);
   }
+
+  /* Backwards compatibility aliases */
+  .sakina-card { @apply sabrify-card; }
+  .sakina-card-elevated { @apply sabrify-card-elevated; }
+  .sakina-gradient-bg { background: var(--gradient-serene); }
+  .sakina-gradient-primary { background: var(--gradient-calm); }
 
   .arabic-text {
     font-family: var(--font-arabic);

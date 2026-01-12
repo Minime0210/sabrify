@@ -52,14 +52,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sakina: {
-          olive: "hsl(var(--sakina-olive))",
-          sage: "hsl(var(--sakina-sage))",
-          sand: "hsl(var(--sakina-sand))",
-          cream: "hsl(var(--sakina-cream))",
-          gold: "hsl(var(--sakina-gold))",
-          night: "hsl(var(--sakina-night))",
-          "calm-blue": "hsl(var(--sakina-calm-blue))",
+        sabrify: {
+          olive: "hsl(var(--sabrify-olive))",
+          sage: "hsl(var(--sabrify-sage))",
+          sand: "hsl(var(--sabrify-sand))",
+          cream: "hsl(var(--sabrify-cream))",
+          gold: "hsl(var(--sabrify-gold))",
+          night: "hsl(var(--sabrify-night))",
+          "calm-blue": "hsl(var(--sabrify-calm-blue))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

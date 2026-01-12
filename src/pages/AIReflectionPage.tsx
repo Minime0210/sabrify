@@ -207,7 +207,7 @@ const AIReflectionPage = () => {
 
     try {
       // Get past sabr reflections for context with validation
-      const storedReflections = localStorage.getItem('sakina-sabr-reflections');
+      const storedReflections = localStorage.getItem('sabrify-sabr-reflections');
       let pastReflections: string[] = [];
       if (storedReflections) {
         try {

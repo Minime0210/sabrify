@@ -49,7 +49,7 @@ const SabrTrackerPage = () => {
     setDailyPrompt(getDailySabrPrompt());
     
     // Load reflections from localStorage with validation
-    const stored = localStorage.getItem('sakina-sabr-reflections');
+    const stored = localStorage.getItem('sabrify-sabr-reflections');
     if (stored) {
       try {
         const parsed = JSON.parse(stored);
@@ -73,7 +73,7 @@ const SabrTrackerPage = () => {
         }
       } catch (e) {
         console.error('Failed to parse reflections:', e);
-        localStorage.removeItem('sakina-sabr-reflections');
+        localStorage.removeItem('sabrify-sabr-reflections');
       }
     }
   }, []);
@@ -101,7 +101,7 @@ const SabrTrackerPage = () => {
     // Limit storage size to prevent storage exhaustion
     const updated = [newReflection, ...reflections].slice(0, MAX_REFLECTIONS_STORED);
     setReflections(updated);
-    localStorage.setItem('sakina-sabr-reflections', JSON.stringify(updated));
+    localStorage.setItem('sabrify-sabr-reflections', JSON.stringify(updated));
     
     setReflection('');
     setShowPrompt(false);

@@ -41,7 +41,7 @@ const Index = () => {
           className="text-center"
         >
           <h1 className="text-3xl font-heading font-semibold text-foreground mb-1">
-            Sakina
+            Sabrify
           </h1>
           <p className="text-muted-foreground text-sm">
             Tranquility for your soul

@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import CalmPage from "./pages/CalmPage";
 import DhikrPage from "./pages/DhikrPage";
 import SettingsPage from "./pages/SettingsPage";
+import SabrTrackerPage from "./pages/SabrTrackerPage";
+import AIReflectionPage from "./pages/AIReflectionPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -21,6 +23,8 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/calm" element={<CalmPage />} />
           <Route path="/dhikr" element={<DhikrPage />} />
+          <Route path="/sabr" element={<SabrTrackerPage />} />
+          <Route path="/reflect" element={<AIReflectionPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

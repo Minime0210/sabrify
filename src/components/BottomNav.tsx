@@ -1,12 +1,13 @@
 import { motion } from 'framer-motion';
-import { Home, Heart, Waves, Settings } from 'lucide-react';
+import { Home, Heart, Waves, Leaf, MessageCircle } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const navItems = [
   { path: '/', icon: Home, label: 'Home' },
   { path: '/calm', icon: Waves, label: 'Calm' },
+  { path: '/sabr', icon: Leaf, label: 'Sabr' },
+  { path: '/reflect', icon: MessageCircle, label: 'Reflect' },
   { path: '/dhikr', icon: Heart, label: 'Dhikr' },
-  { path: '/settings', icon: Settings, label: 'Settings' },
 ];
 
 export const BottomNav = () => {

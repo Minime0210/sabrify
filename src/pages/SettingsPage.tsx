@@ -1,26 +1,12 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { BottomNav } from '@/components/BottomNav';
-import { ArrowLeft, Bell, Moon, Sun, Clock, Shield } from 'lucide-react';
+import { ArrowLeft, Moon, Sun, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-interface ReminderSettings {
-  morning: boolean;
-  midday: boolean;
-  evening: boolean;
-  beforeSleep: boolean;
-  randomReminders: boolean;
-}
+import { NotificationSettings } from '@/components/NotificationSettings';
 
 const SettingsPage = () => {
   const [darkMode, setDarkMode] = useState(false);
-  const [reminders, setReminders] = useState<ReminderSettings>({
-    morning: true,
-    midday: false,
-    evening: true,
-    beforeSleep: true,
-    randomReminders: false,
-  });
 
   // Check for system dark mode preference
   useEffect(() => {
@@ -36,10 +22,6 @@ const SettingsPage = () => {
     } else {
       document.documentElement.classList.remove('dark');
     }
-  };
-
-  const toggleReminder = (key: keyof ReminderSettings) => {
-    setReminders(prev => ({ ...prev, [key]: !prev[key] }));
   };
 
   const ToggleSwitch = ({ enabled, onToggle }: { enabled: boolean; onToggle: () => void }) => (
@@ -91,38 +73,7 @@ const SettingsPage = () => {
 
         {/* Reminders */}
         <section className="space-y-3">
-          <div className="flex items-center gap-2 px-2">
-            <Bell className="w-4 h-4 text-muted-foreground" />
-            <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-              Reminders
-            </h2>
-          </div>
-          <div className="sakina-card divide-y divide-border">
-            {[
-              { key: 'morning', label: 'Morning Reminder', time: '6:00 AM', icon: '🌅' },
-              { key: 'midday', label: 'Midday Check-in', time: '12:00 PM', icon: '☀️' },
-              { key: 'evening', label: 'Evening Reflection', time: '6:00 PM', icon: '🌆' },
-              { key: 'beforeSleep', label: 'Before Sleep', time: '10:00 PM', icon: '🌙' },
-              { key: 'randomReminders', label: 'Random Gentle Reminders', time: 'Throughout the day', icon: '✨' },
-            ].map((item) => (
-              <div key={item.key} className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">{item.icon}</span>
-                  <div>
-                    <p className="font-medium text-foreground">{item.label}</p>
-                    <p className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {item.time}
-                    </p>
-                  </div>
-                </div>
-                <ToggleSwitch 
-                  enabled={reminders[item.key as keyof ReminderSettings]} 
-                  onToggle={() => toggleReminder(item.key as keyof ReminderSettings)} 
-                />
-              </div>
-            ))}
-          </div>
+          <NotificationSettings />
         </section>
 
         {/* Privacy */}

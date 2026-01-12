@@ -1,21 +1,31 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BreathingCircle } from '@/components/BreathingCircle';
 import { AyahCard } from '@/components/AyahCard';
 import { DuaCard } from '@/components/DuaCard';
 import { BottomNav } from '@/components/BottomNav';
+import { AmbientSoundSelector } from '@/components/AmbientSoundSelector';
+import { useAmbientSound, AmbientSoundType } from '@/hooks/useAmbientSound';
 import { getRandomAyah, getRandomDua } from '@/data/islamicContent';
-import { ArrowLeft, Volume2, VolumeX } from 'lucide-react';
+import { ArrowLeft, Volume2, ChevronDown, ChevronUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 type CalmPhase = 'intro' | 'breathing' | 'reflection';
 
 const CalmPage = () => {
   const [phase, setPhase] = useState<CalmPhase>('intro');
-  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [showSoundPanel, setShowSoundPanel] = useState(false);
+  const { soundType, isPlaying, volume, playSound, stopSound, updateVolume } = useAmbientSound();
 
   const calmingAyah = getRandomAyah('trust');
   const calmingDua = getRandomDua('calm');
+
+  // Stop sound when leaving the page
+  useEffect(() => {
+    return () => {
+      stopSound();
+    };
+  }, [stopSound]);
 
   const handleStartBreathing = () => {
     setPhase('breathing');
@@ -36,12 +46,50 @@ const CalmPage = () => {
           Find Your Calm
         </h1>
         <button 
-          onClick={() => setSoundEnabled(!soundEnabled)}
-          className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
+          onClick={() => setShowSoundPanel(!showSoundPanel)}
+          className={`p-2 -mr-2 transition-colors ${isPlaying ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
         >
-          {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5" />}
+          <Volume2 className="w-5 h-5" />
+          {isPlaying && (
+            <motion.span
+              className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary"
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+            />
+          )}
         </button>
       </header>
+
+      {/* Sound Panel */}
+      <AnimatePresence>
+        {showSoundPanel && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="px-4 pb-4 max-w-lg mx-auto"
+          >
+            <div className="sakina-card p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-medium text-foreground">Ambient Sounds</h3>
+                <button 
+                  onClick={() => setShowSoundPanel(false)}
+                  className="p-1 text-muted-foreground hover:text-foreground"
+                >
+                  <ChevronUp className="w-4 h-4" />
+                </button>
+              </div>
+              <AmbientSoundSelector
+                currentSound={soundType}
+                isPlaying={isPlaying}
+                volume={volume}
+                onSelectSound={playSound}
+                onVolumeChange={updateVolume}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <main className="px-4 max-w-lg mx-auto">
         <AnimatePresence mode="wait">

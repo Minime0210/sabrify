@@ -10,6 +10,7 @@ import SettingsPage from "./pages/SettingsPage";
 import SabrTrackerPage from "./pages/SabrTrackerPage";
 import AIReflectionPage from "./pages/AIReflectionPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/reflect" element={<AIReflectionPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -110,7 +110,7 @@ const SettingsPage = () => {
             About
           </h2>
           <div className="sakina-card p-4 text-center space-y-2">
-            <p className="font-heading text-xl text-foreground">Sakina</p>
+            <p className="font-heading text-xl text-foreground">Sabrify</p>
             <p className="text-sm text-muted-foreground">Version 1.0.0</p>
             <p className="text-xs text-muted-foreground pt-2 border-t border-border mt-4">
               Made with love for the Ummah 💚

@@ -14,18 +14,50 @@ const ResetPasswordPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if we have a valid session from the password reset link
-    const checkSession = async () => {
+    // Listen for auth state changes - Supabase will process the recovery token from the URL hash
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log('Auth event:', event, 'Session:', !!session);
+      
+      if (event === 'PASSWORD_RECOVERY') {
+        // User clicked recovery link and token is valid
+        setIsCheckingSession(false);
+        setError(null);
+      } else if (event === 'SIGNED_IN' && session) {
+        // Session established from recovery
+        setIsCheckingSession(false);
+        setError(null);
+      }
+    });
+
+    // Also check if we already have a session (user might have refreshed)
+    const checkExistingSession = async () => {
+      // Give Supabase time to process the hash fragment
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        setError('Invalid or expired reset link. Please request a new one.');
+      
+      if (session) {
+        setIsCheckingSession(false);
+        setError(null);
+      } else {
+        // Check if there's a hash in the URL (recovery link format)
+        const hash = window.location.hash;
+        if (!hash || !hash.includes('access_token')) {
+          setIsCheckingSession(false);
+          setError('Invalid or expired reset link. Please request a new one.');
+        }
+        // If there's a hash, wait for onAuthStateChange to process it
       }
     };
-    checkSession();
+
+    checkExistingSession();
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,6 +108,21 @@ const ResetPasswordPage = () => {
       setIsLoading(false);
     }
   };
+
+  if (isCheckingSession) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="sakina-card-elevated w-full max-w-md text-center"
+        >
+          <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Verifying reset link...</p>
+        </motion.div>
+      </div>
+    );
+  }
 
   if (error) {
     return (

@@ -75,7 +75,7 @@ export const BreathingCircle = ({
         
         {/* Main circle */}
         <motion.div
-          className="relative w-48 h-48 rounded-full sakina-gradient-primary flex items-center justify-center shadow-elevated"
+          className="relative w-48 h-48 rounded-full sabrify-gradient-primary flex items-center justify-center shadow-elevated"
           animate={{
             scale: phase === 'inhale' ? [1, 1.15] : phase === 'exhale' ? [1.15, 1] : 1.15,
           }}

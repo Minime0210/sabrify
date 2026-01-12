@@ -15,7 +15,7 @@ const DhikrPage = () => {
 
   if (selectedDhikr) {
     return (
-      <div className="min-h-screen sakina-gradient-bg pb-24">
+      <div className="min-h-screen sabrify-gradient-bg pb-24">
         {/* Header */}
         <header className="pt-12 pb-6 px-6 flex items-center justify-between">
           <button 
@@ -40,7 +40,7 @@ const DhikrPage = () => {
   }
 
   return (
-    <div className="min-h-screen sakina-gradient-bg pb-24">
+    <div className="min-h-screen sabrify-gradient-bg pb-24">
       {/* Header */}
       <header className="pt-12 pb-6 px-6">
         <div className="flex items-center justify-between mb-2">
@@ -66,7 +66,7 @@ const DhikrPage = () => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: index * 0.1, duration: 0.4 }}
               onClick={() => setSelectedDhikr(dhikr)}
-              className="w-full sakina-card p-4 text-left hover:shadow-card transition-shadow"
+              className="w-full sabrify-card p-4 text-left hover:shadow-card transition-shadow"
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1 min-w-0">

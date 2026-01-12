@@ -102,7 +102,7 @@ export const PremiumBanner = ({
               </ul>
               <Button
                 onClick={onUpgrade}
-                className="sakina-gradient-primary text-primary-foreground w-full sm:w-auto"
+                className="sabrify-gradient-primary text-primary-foreground w-full sm:w-auto"
               >
                 <Crown className="w-4 h-4 mr-2" />
                 Upgrade for $4.99/month

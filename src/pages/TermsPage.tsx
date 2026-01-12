@@ -6,7 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 
 const TermsPage = () => {
   return (
-    <div className="min-h-screen sakina-gradient-bg pb-24">
+    <div className="min-h-screen sabrify-gradient-bg pb-24">
       {/* Header */}
       <header className="pt-12 pb-6 px-6 flex items-center">
         <Link to="/settings" className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors">
@@ -21,7 +21,7 @@ const TermsPage = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="sakina-card p-4"
+          className="sabrify-card p-4"
         >
           <Accordion type="single" collapsible className="w-full">
             {/* Privacy Policy */}

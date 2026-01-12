@@ -82,7 +82,7 @@ export const DhikrCounter = ({ dhikr, onComplete }: DhikrCounterProps) => {
                 animate={{ scale: 1, opacity: 1 }}
                 className="flex flex-col items-center gap-2"
               >
-                <div className="w-12 h-12 rounded-full sakina-gradient-primary flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full sabrify-gradient-primary flex items-center justify-center">
                   <Check className="w-6 h-6 text-primary-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">Complete</p>

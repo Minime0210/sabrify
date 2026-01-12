@@ -31,7 +31,7 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen sakina-gradient-bg pb-24">
+    <div className="min-h-screen sabrify-gradient-bg pb-24">
       {/* Header */}
       <header className="pt-12 pb-6 px-6">
         <motion.div
@@ -57,7 +57,7 @@ const Index = () => {
           transition={{ delay: 0.2, duration: 0.5 }}
         >
           <Link to="/calm">
-            <div className="sakina-card-elevated sakina-gradient-primary text-primary-foreground p-6 cursor-pointer hover:shadow-elevated transition-shadow">
+            <div className="sabrify-card-elevated sabrify-gradient-primary text-primary-foreground p-6 cursor-pointer hover:shadow-elevated transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-primary-foreground/20 flex items-center justify-center">
@@ -77,7 +77,7 @@ const Index = () => {
         {/* Daily Ayah */}
         <section className="space-y-4">
           <div className="flex items-center gap-2 px-2">
-            <div className="w-1 h-4 rounded-full sakina-gradient-primary" />
+            <div className="w-1 h-4 rounded-full sabrify-gradient-primary" />
             <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
               Today's Reflection
             </h2>
@@ -95,7 +95,7 @@ const Index = () => {
             </h2>
           </div>
           
-          <div className="sakina-card">
+          <div className="sabrify-card">
             <MoodSelector onSelect={handleMoodSelect} selectedMood={selectedMood} />
           </div>
         </section>
@@ -115,7 +115,7 @@ const Index = () => {
             </div>
 
             {/* Message */}
-            <div className="sakina-card bg-secondary/50">
+            <div className="sabrify-card bg-secondary/50">
               <p className="text-center font-heading text-foreground/90 italic">
                 {moodContent.message}
               </p>
@@ -135,7 +135,7 @@ const Index = () => {
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="sakina-card p-5 text-center cursor-pointer hover:shadow-card transition-shadow"
+              className="sabrify-card p-5 text-center cursor-pointer hover:shadow-card transition-shadow"
             >
               <div className="w-12 h-12 rounded-full bg-secondary mx-auto mb-3 flex items-center justify-center">
                 <span className="text-2xl">📿</span>
@@ -149,7 +149,7 @@ const Index = () => {
             <motion.div
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="sakina-card p-5 text-center cursor-pointer hover:shadow-card transition-shadow"
+              className="sabrify-card p-5 text-center cursor-pointer hover:shadow-card transition-shadow"
             >
               <div className="w-12 h-12 rounded-full bg-secondary mx-auto mb-3 flex items-center justify-center">
                 <span className="text-2xl">🌙</span>

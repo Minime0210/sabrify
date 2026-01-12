@@ -18,7 +18,7 @@ const DEFAULT_SETTINGS: ReminderSettings = {
   beforeSleepTime: '22:00',
 };
 
-const STORAGE_KEY = 'sakina_reminder_settings';
+const STORAGE_KEY = 'sabrify_reminder_settings';
 
 export function useNotifications() {
   const [permission, setPermission] = useState<NotificationPermission>('default');

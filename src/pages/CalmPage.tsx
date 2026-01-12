@@ -36,7 +36,7 @@ const CalmPage = () => {
   };
 
   return (
-    <div className="min-h-screen sakina-gradient-bg pb-24">
+    <div className="min-h-screen sabrify-gradient-bg pb-24">
       {/* Header */}
       <header className="pt-12 pb-6 px-6 flex items-center justify-between">
         <Link to="/" className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors">
@@ -69,7 +69,7 @@ const CalmPage = () => {
             exit={{ opacity: 0, height: 0 }}
             className="px-4 pb-4 max-w-lg mx-auto"
           >
-            <div className="sakina-card p-4 space-y-3">
+            <div className="sabrify-card p-4 space-y-3">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-medium text-foreground">Ambient Sounds</h3>
                 <button 
@@ -106,7 +106,7 @@ const CalmPage = () => {
                 <motion.div
                   animate={{ scale: [1, 1.1, 1] }}
                   transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  className="w-24 h-24 mx-auto rounded-full sakina-gradient-primary opacity-80 flex items-center justify-center"
+                  className="w-24 h-24 mx-auto rounded-full sabrify-gradient-primary opacity-80 flex items-center justify-center"
                 >
                   <span className="text-4xl">🤍</span>
                 </motion.div>
@@ -119,7 +119,7 @@ const CalmPage = () => {
                 </p>
               </div>
 
-              <div className="sakina-card p-6">
+              <div className="sabrify-card p-6">
                 <p className="arabic-text text-xl text-foreground mb-3">
                   حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ
                 </p>
@@ -135,7 +135,7 @@ const CalmPage = () => {
                 onClick={handleStartBreathing}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="px-8 py-4 rounded-2xl sakina-gradient-primary text-primary-foreground font-medium shadow-elevated"
+                className="px-8 py-4 rounded-2xl sabrify-gradient-primary text-primary-foreground font-medium shadow-elevated"
               >
                 Begin Breathing Exercise
               </motion.button>
@@ -204,7 +204,7 @@ const CalmPage = () => {
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="w-full py-3 rounded-xl sakina-gradient-primary text-primary-foreground font-medium"
+                    className="w-full py-3 rounded-xl sabrify-gradient-primary text-primary-foreground font-medium"
                   >
                     Return Home
                   </motion.button>

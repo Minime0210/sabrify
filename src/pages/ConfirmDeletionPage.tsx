@@ -49,11 +49,11 @@ const ConfirmDeletionPage = () => {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen sakina-gradient-bg flex items-center justify-center p-4">
+    <div className="min-h-screen sabrify-gradient-bg flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="sakina-card-elevated max-w-md w-full p-8 text-center"
+        className="sabrify-card-elevated max-w-md w-full p-8 text-center"
       >
         {status === 'loading' && (
           <>
@@ -84,7 +84,7 @@ const ConfirmDeletionPage = () => {
               May Allah bless you on your journey. You are always welcome back. 💚
             </p>
             <Link to="/">
-              <Button className="sakina-gradient-primary text-primary-foreground">
+              <Button className="sabrify-gradient-primary text-primary-foreground">
                 <Home className="w-4 h-4 mr-2" />
                 Return Home
               </Button>
@@ -110,7 +110,7 @@ const ConfirmDeletionPage = () => {
                 </Button>
               </Link>
               <Link to="/">
-                <Button className="sakina-gradient-primary text-primary-foreground">
+                <Button className="sabrify-gradient-primary text-primary-foreground">
                   <Home className="w-4 h-4 mr-2" />
                   Return Home
                 </Button>

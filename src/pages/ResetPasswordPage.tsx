@@ -115,7 +115,7 @@ const ResetPasswordPage = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="sakina-card-elevated w-full max-w-md text-center"
+          className="sabrify-card-elevated w-full max-w-md text-center"
         >
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-muted-foreground">Verifying reset link...</p>
@@ -130,7 +130,7 @@ const ResetPasswordPage = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="sakina-card-elevated w-full max-w-md text-center"
+          className="sabrify-card-elevated w-full max-w-md text-center"
         >
           <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mx-auto mb-4">
             <Lock className="w-8 h-8 text-destructive" />
@@ -153,7 +153,7 @@ const ResetPasswordPage = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="sakina-card-elevated w-full max-w-md text-center"
+          className="sabrify-card-elevated w-full max-w-md text-center"
         >
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-primary" />
@@ -174,7 +174,7 @@ const ResetPasswordPage = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sakina-card-elevated w-full max-w-md"
+        className="sabrify-card-elevated w-full max-w-md"
       >
         <div className="text-center mb-6">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
@@ -225,7 +225,7 @@ const ResetPasswordPage = () => {
 
           <Button
             type="submit"
-            className="w-full sakina-gradient-primary text-primary-foreground"
+            className="w-full sabrify-gradient-primary text-primary-foreground"
             disabled={isLoading}
           >
             {isLoading ? (

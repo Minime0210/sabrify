@@ -100,7 +100,7 @@ const SettingsPage = () => {
   );
 
   return (
-    <div className="min-h-screen sakina-gradient-bg pb-24">
+    <div className="min-h-screen sabrify-gradient-bg pb-24">
       {/* Header */}
       <header className="pt-12 pb-6 px-6 flex items-center">
         <Link to="/" className="p-2 -ml-2 text-muted-foreground hover:text-foreground transition-colors">
@@ -117,7 +117,7 @@ const SettingsPage = () => {
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide px-2">
             Appearance
           </h2>
-          <div className="sakina-card p-4">
+          <div className="sabrify-card p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 {darkMode ? <Moon className="w-5 h-5 text-foreground" /> : <Sun className="w-5 h-5 text-foreground" />}
@@ -144,7 +144,7 @@ const SettingsPage = () => {
               Privacy
             </h2>
           </div>
-          <div className="sakina-card p-4 space-y-3">
+          <div className="sabrify-card p-4 space-y-3">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
                 <Shield className="w-5 h-5 text-primary" />
@@ -173,7 +173,7 @@ const SettingsPage = () => {
                 Danger Zone
               </h2>
             </div>
-            <div className="sakina-card p-4 border border-destructive/20">
+            <div className="sabrify-card p-4 border border-destructive/20">
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center flex-shrink-0">
                   <Trash2 className="w-5 h-5 text-destructive" />
@@ -233,7 +233,7 @@ const SettingsPage = () => {
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide px-2">
             Legal
           </h2>
-          <Link to="/terms" className="sakina-card p-4 flex items-center gap-3 hover:bg-secondary/50 transition-colors">
+          <Link to="/terms" className="sabrify-card p-4 flex items-center gap-3 hover:bg-secondary/50 transition-colors">
             <FileText className="w-5 h-5 text-muted-foreground" />
             <div>
               <p className="font-medium text-foreground">Terms & Policies</p>
@@ -247,7 +247,7 @@ const SettingsPage = () => {
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide px-2">
             About
           </h2>
-          <div className="sakina-card p-4 text-center space-y-2">
+          <div className="sabrify-card p-4 text-center space-y-2">
             <p className="font-heading text-xl text-foreground">Sabrify</p>
             <p className="text-sm text-muted-foreground">Version 1.0.0</p>
             <p className="text-xs text-muted-foreground pt-2 border-t border-border mt-4">

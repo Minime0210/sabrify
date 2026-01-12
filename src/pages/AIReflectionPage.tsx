@@ -265,7 +265,7 @@ const AIReflectionPage = () => {
   };
 
   return (
-    <div className="min-h-screen sakina-gradient-bg pb-24 flex flex-col">
+    <div className="min-h-screen sabrify-gradient-bg pb-24 flex flex-col">
       {/* Header */}
       <header className="pt-12 pb-4 px-6 flex-shrink-0">
         <div className="flex items-center justify-between">
@@ -367,7 +367,7 @@ const AIReflectionPage = () => {
                   <p className="text-sm">{msg.content}</p>
                 </div>
               ) : (
-                <Card className="sakina-card">
+                <Card className="sabrify-card">
                   <CardContent className="p-4 space-y-4">
                     {/* Acknowledgment */}
                     {msg.response?.acknowledgment && (
@@ -426,7 +426,7 @@ const AIReflectionPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <Card className="sakina-card">
+            <Card className="sabrify-card">
               <CardContent className="p-4 flex items-center gap-3">
                 <Loader2 className="w-5 h-5 text-primary animate-spin" />
                 <p className="text-sm text-muted-foreground">Reflecting...</p>
@@ -449,7 +449,7 @@ const AIReflectionPage = () => {
                 </p>
                 <Button
                   onClick={() => setShowAuthModal(true)}
-                  className="sakina-gradient-primary text-primary-foreground"
+                  className="sabrify-gradient-primary text-primary-foreground"
                 >
                   <LogIn className="w-4 h-4 mr-2" />
                   Sign In to Continue
@@ -467,7 +467,7 @@ const AIReflectionPage = () => {
                 </p>
                 <Button
                   onClick={handleUpgrade}
-                  className="sakina-gradient-primary text-primary-foreground"
+                  className="sabrify-gradient-primary text-primary-foreground"
                 >
                   <Crown className="w-4 h-4 mr-2" />
                   Upgrade for Unlimited
@@ -494,7 +494,7 @@ const AIReflectionPage = () => {
               <Button
                 onClick={sendMessage}
                 disabled={!input.trim() || isLoading}
-                className="sakina-gradient-primary text-primary-foreground h-12 w-12 p-0"
+                className="sabrify-gradient-primary text-primary-foreground h-12 w-12 p-0"
               >
                 <Send className="w-5 h-5" />
               </Button>

@@ -159,6 +159,13 @@ const Index = () => {
             </motion.div>
           </Link>
         </section>
+
+        {/* Footer Links */}
+        <section className="text-center pb-4">
+          <Link to="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
+            Terms & Privacy
+          </Link>
+        </section>
       </main>
 
       <BottomNav />

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { User, Crown, LogOut, Settings, Loader2, CheckCircle, XCircle } from 'lucide-react';
+import { User, Crown, LogOut, Settings, Loader2, CheckCircle, XCircle, FileText } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BottomNav } from '@/components/BottomNav';
 import { Button } from '@/components/ui/button';
@@ -257,6 +257,10 @@ const ProfilePage = () => {
           <Link to="/settings" className="sakina-card p-4 flex items-center gap-3 hover:bg-secondary/50 transition-colors">
             <Settings className="w-5 h-5 text-muted-foreground" />
             <span className="font-medium text-foreground">Settings</span>
+          </Link>
+          <Link to="/terms" className="sakina-card p-4 flex items-center gap-3 hover:bg-secondary/50 transition-colors">
+            <FileText className="w-5 h-5 text-muted-foreground" />
+            <span className="font-medium text-foreground">Terms & Privacy</span>
           </Link>
         </motion.section>
 

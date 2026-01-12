@@ -57,23 +57,26 @@ const SettingsPage = () => {
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
     try {
-      // Clear all local data first
-      localStorage.clear();
+      const { data, error } = await supabase.functions.invoke('request-account-deletion');
       
-      // Sign out (account deletion requires admin API, so we sign out and inform user)
-      await supabase.auth.signOut();
+      if (error) {
+        throw error;
+      }
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
       
       toast({
-        title: 'Account signed out',
-        description: 'Your local data has been cleared. To fully delete your account, please contact support.',
+        title: 'Confirmation email sent',
+        description: 'Please check your inbox and click the link to confirm account deletion.',
       });
       
-      navigate('/');
-    } catch (error) {
-      console.error('Error during account deletion:', error);
+    } catch (error: any) {
+      console.error('Error requesting account deletion:', error);
       toast({
         title: 'Error',
-        description: 'Failed to delete account. Please try again.',
+        description: error.message || 'Failed to request account deletion. Please try again.',
         variant: 'destructive',
       });
     } finally {
@@ -178,7 +181,7 @@ const SettingsPage = () => {
                 <div className="flex-1">
                   <p className="font-medium text-foreground">Delete Account</p>
                   <p className="text-xs text-muted-foreground mb-3">
-                    This will sign you out and clear all local data. This action cannot be undone.
+                    We'll send a confirmation email to permanently delete your account.
                   </p>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -193,9 +196,11 @@ const SettingsPage = () => {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogTitle>Request Account Deletion</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will permanently delete your account and clear all local data including your reflections, dhikr counts, and preferences. This action cannot be undone.
+                          We will send a confirmation email to your registered email address. 
+                          Click the link in that email to permanently delete your account and all associated data. 
+                          The link expires in 1 hour.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
@@ -208,10 +213,10 @@ const SettingsPage = () => {
                           {isDeleting ? (
                             <>
                               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                              Deleting...
+                              Sending...
                             </>
                           ) : (
-                            'Yes, delete my account'
+                            'Send Confirmation Email'
                           )}
                         </AlertDialogAction>
                       </AlertDialogFooter>

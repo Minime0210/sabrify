@@ -11,3 +11,9 @@ verify_jwt = false
 
 [functions.customer-portal]
 verify_jwt = false
+
+[functions.request-account-deletion]
+verify_jwt = false
+
+[functions.confirm-account-deletion]
+verify_jwt = false

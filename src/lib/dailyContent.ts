@@ -112,7 +112,7 @@ const selectWithAvoidance = <T extends { id: string }>(
 export const getDailyAyah = (category?: Ayah['category']): Ayah => {
   const dayNumber = getLocalDayNumber();
   const filtered = category ? ayat.filter(a => a.category === category) : ayat;
-  return selectWithAvoidance(filtered, dayNumber, 'sakina-recent-ayat', category ? category.charCodeAt(0) : 0);
+  return selectWithAvoidance(filtered, dayNumber, 'sabrify-recent-ayat', category ? category.charCodeAt(0) : 0);
 };
 
 /**
@@ -121,7 +121,7 @@ export const getDailyAyah = (category?: Ayah['category']): Ayah => {
 export const getDailyDua = (category?: Dua['category']): Dua => {
   const dayNumber = getLocalDayNumber();
   const filtered = category ? duas.filter(d => d.category === category) : duas;
-  return selectWithAvoidance(filtered, dayNumber, 'sakina-recent-duas', category ? category.charCodeAt(0) : 0);
+  return selectWithAvoidance(filtered, dayNumber, 'sabrify-recent-duas', category ? category.charCodeAt(0) : 0);
 };
 
 /**
@@ -129,7 +129,7 @@ export const getDailyDua = (category?: Dua['category']): Dua => {
  */
 export const getDailyDhikr = (): Dhikr => {
   const dayNumber = getLocalDayNumber();
-  return selectWithAvoidance(adhkar, dayNumber, 'sakina-recent-adhkar');
+  return selectWithAvoidance(adhkar, dayNumber, 'sabrify-recent-adhkar');
 };
 
 /**
@@ -142,14 +142,14 @@ export const getMoodContent = (mood: string, moodAyat: Ayah[], moodDuas: Dua[]) 
   const ayah = selectWithAvoidance(
     moodAyat, 
     dayNumber, 
-    `sakina-recent-mood-ayat-${mood}`, 
+    `sabrify-recent-mood-ayat-${mood}`, 
     moodOffset
   );
   
   const dua = selectWithAvoidance(
     moodDuas, 
     dayNumber, 
-    `sakina-recent-mood-duas-${mood}`, 
+    `sabrify-recent-mood-duas-${mood}`, 
     moodOffset + 1000
   );
   
@@ -197,7 +197,7 @@ export const shouldResetDailyUsage = (storedDateKey: string): boolean => {
  */
 export const getDailyAIUsage = (): { count: number; dateKey: string } => {
   try {
-    const stored = localStorage.getItem('sakina-ai-usage');
+    const stored = localStorage.getItem('sabrify-ai-usage');
     if (!stored) {
       return { count: 0, dateKey: getLocalDateKey() };
     }
@@ -207,7 +207,7 @@ export const getDailyAIUsage = (): { count: number; dateKey: string } => {
     
     if (shouldResetDailyUsage(storedDate)) {
       const newState = { count: 0, dateKey: getLocalDateKey() };
-      localStorage.setItem('sakina-ai-usage', JSON.stringify(newState));
+      localStorage.setItem('sabrify-ai-usage', JSON.stringify(newState));
       return newState;
     }
     
@@ -222,7 +222,7 @@ export const getDailyAIUsage = (): { count: number; dateKey: string } => {
  */
 export const incrementAIUsage = (currentCount: number): number => {
   const newCount = currentCount + 1;
-  localStorage.setItem('sakina-ai-usage', JSON.stringify({
+  localStorage.setItem('sabrify-ai-usage', JSON.stringify({
     count: newCount,
     dateKey: getLocalDateKey()
   }));

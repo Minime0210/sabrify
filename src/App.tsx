@@ -9,6 +9,7 @@ import DhikrPage from "./pages/DhikrPage";
 import SettingsPage from "./pages/SettingsPage";
 import SabrTrackerPage from "./pages/SabrTrackerPage";
 import AIReflectionPage from "./pages/AIReflectionPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/sabr" element={<SabrTrackerPage />} />
           <Route path="/reflect" element={<AIReflectionPage />} />
           <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

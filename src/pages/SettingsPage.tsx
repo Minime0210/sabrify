@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { BottomNav } from '@/components/BottomNav';
-import { ArrowLeft, Moon, Sun, Shield, Trash2, Loader2, FileText } from 'lucide-react';
+import { ArrowLeft, Moon, Sun, Shield, Trash2, Loader2, FileText, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { NotificationSettings } from '@/components/NotificationSettings';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -23,6 +23,9 @@ const SettingsPage = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -55,9 +58,20 @@ const SettingsPage = () => {
   };
 
   const handleDeleteAccount = async () => {
+    if (!deletePassword.trim()) {
+      toast({
+        title: 'Password required',
+        description: 'Please enter your password to confirm deletion.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsDeleting(true);
     try {
-      const { data, error } = await supabase.functions.invoke('request-account-deletion');
+      const { data, error } = await supabase.functions.invoke('delete-account', {
+        body: { password: deletePassword }
+      });
       
       if (error) {
         throw error;
@@ -67,20 +81,28 @@ const SettingsPage = () => {
         throw new Error(data.error);
       }
       
+      // Clear local storage and sign out
+      localStorage.clear();
+      await supabase.auth.signOut();
+      
       toast({
-        title: 'Confirmation email sent',
-        description: 'Please check your inbox and click the link to confirm account deletion.',
+        title: 'Account deleted',
+        description: 'Your account has been permanently deleted. May Allah bless your journey.',
       });
       
+      setDeleteDialogOpen(false);
+      navigate('/');
+      
     } catch (error: any) {
-      console.error('Error requesting account deletion:', error);
+      console.error('Error deleting account:', error);
       toast({
-        title: 'Error',
-        description: error.message || 'Failed to request account deletion. Please try again.',
+        title: 'Deletion failed',
+        description: error.message || 'Failed to delete account. Please try again.',
         variant: 'destructive',
       });
     } finally {
       setIsDeleting(false);
+      setDeletePassword('');
     }
   };
 
@@ -181,9 +203,15 @@ const SettingsPage = () => {
                 <div className="flex-1">
                   <p className="font-medium text-foreground">Delete Account</p>
                   <p className="text-xs text-muted-foreground mb-3">
-                    We'll send a confirmation email to permanently delete your account.
+                    Enter your password to permanently delete your account.
                   </p>
-                  <AlertDialog>
+                  <AlertDialog open={deleteDialogOpen} onOpenChange={(open) => {
+                    setDeleteDialogOpen(open);
+                    if (!open) {
+                      setDeletePassword('');
+                      setShowPassword(false);
+                    }
+                  }}>
                     <AlertDialogTrigger asChild>
                       <Button
                         variant="destructive"
@@ -196,29 +224,45 @@ const SettingsPage = () => {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Request Account Deletion</AlertDialogTitle>
+                        <AlertDialogTitle>Delete Account</AlertDialogTitle>
                         <AlertDialogDescription>
-                          We will send a confirmation email to your registered email address. 
-                          Click the link in that email to permanently delete your account and all associated data. 
-                          The link expires in 1 hour.
+                          This action cannot be undone. Enter your password to confirm permanent deletion of your account and all associated data.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
+                      <div className="py-4">
+                        <div className="relative">
+                          <Input
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Enter your password"
+                            value={deletePassword}
+                            onChange={(e) => setDeletePassword(e.target.value)}
+                            className="pr-10"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          >
+                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction
+                        <Button
                           onClick={handleDeleteAccount}
-                          disabled={isDeleting}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          disabled={isDeleting || !deletePassword.trim()}
+                          variant="destructive"
                         >
                           {isDeleting ? (
                             <>
                               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                              Sending...
+                              Deleting...
                             </>
                           ) : (
-                            'Send Confirmation Email'
+                            'Delete Account'
                           )}
-                        </AlertDialogAction>
+                        </Button>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>

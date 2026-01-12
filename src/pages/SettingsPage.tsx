@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 import { BottomNav } from '@/components/BottomNav';
-import { ArrowLeft, Moon, Sun, Shield, Trash2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Moon, Sun, Shield, Trash2, Loader2, FileText } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { NotificationSettings } from '@/components/NotificationSettings';
 import { Button } from '@/components/ui/button';
@@ -222,6 +222,20 @@ const SettingsPage = () => {
             </div>
           </section>
         )}
+
+        {/* Legal */}
+        <section className="space-y-3">
+          <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide px-2">
+            Legal
+          </h2>
+          <Link to="/terms" className="sakina-card p-4 flex items-center gap-3 hover:bg-secondary/50 transition-colors">
+            <FileText className="w-5 h-5 text-muted-foreground" />
+            <div>
+              <p className="font-medium text-foreground">Terms & Policies</p>
+              <p className="text-xs text-muted-foreground">Privacy, Terms of Use, AI Disclaimer</p>
+            </div>
+          </Link>
+        </section>
 
         {/* About */}
         <section className="space-y-3">

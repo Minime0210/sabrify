@@ -5,7 +5,7 @@ import { BottomNav } from '@/components/BottomNav';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import { ChevronLeft, MessageCircle, Send, Loader2, AlertCircle, Sparkles, Crown, LogIn } from 'lucide-react';
+import { ChevronLeft, MessageCircle, Send, Loader2, AlertCircle, Sparkles, Crown, LogIn, History, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -35,10 +35,18 @@ interface Message {
   response?: AIResponse;
 }
 
+interface ReflectionSummary {
+  id: string;
+  date: string;
+  summary: string;
+  timestamp: number;
+}
+
 const FREE_DAILY_LIMIT = 3;
 const MAX_CHAT_MESSAGES = 50;
 const MAX_MESSAGE_LENGTH = 2000;
 const MAX_REFLECTION_LENGTH = 2000;
+const REFLECTION_STORAGE_KEY = 'sabrify-reflection-summaries';
 
 // Validate message structure
 const isValidMessage = (obj: unknown): obj is Message => {
@@ -76,6 +84,88 @@ const isValidReflection = (obj: unknown): obj is SabrReflection => {
   );
 };
 
+// Generate a 3-word summary from conversation
+const generateSummary = (userMessage: string): string => {
+  const words = userMessage.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2);
+  
+  // Common emotion/topic words to prioritize
+  const emotionWords = ['anxious', 'stressed', 'worried', 'sad', 'happy', 'grateful', 'confused', 'angry', 'peaceful', 'hopeful', 'lost', 'overwhelmed', 'tired', 'afraid', 'lonely', 'blessed'];
+  const topicWords = ['work', 'family', 'health', 'faith', 'prayer', 'life', 'future', 'past', 'relationship', 'money', 'career', 'children', 'parents', 'spouse', 'friends'];
+  
+  const foundEmotions = words.filter(w => emotionWords.some(e => w.includes(e)));
+  const foundTopics = words.filter(w => topicWords.some(t => w.includes(t)));
+  
+  // Build summary
+  const summaryParts: string[] = [];
+  
+  if (foundEmotions.length > 0) {
+    summaryParts.push(foundEmotions[0].charAt(0).toUpperCase() + foundEmotions[0].slice(1));
+  }
+  if (foundTopics.length > 0) {
+    summaryParts.push(foundTopics[0]);
+  }
+  
+  // Fill remaining with significant words
+  const significant = words.filter(w => w.length > 4 && !foundEmotions.includes(w) && !foundTopics.includes(w));
+  while (summaryParts.length < 3 && significant.length > 0) {
+    summaryParts.push(significant.shift()!);
+  }
+  
+  // Fallback summaries
+  if (summaryParts.length === 0) summaryParts.push('Seeking', 'inner', 'peace');
+  else if (summaryParts.length === 1) summaryParts.push('reflection', 'moment');
+  else if (summaryParts.length === 2) summaryParts.push('journey');
+  
+  return summaryParts.slice(0, 3).join(' ');
+};
+
+// Save reflection summary
+const saveReflectionSummary = (userMessage: string): ReflectionSummary => {
+  const summary = generateSummary(userMessage);
+  const newSummary: ReflectionSummary = {
+    id: Date.now().toString(),
+    date: getLocalDateKey(),
+    summary,
+    timestamp: Date.now()
+  };
+  
+  try {
+    const stored = localStorage.getItem(REFLECTION_STORAGE_KEY);
+    const summaries: ReflectionSummary[] = stored ? JSON.parse(stored) : [];
+    summaries.unshift(newSummary);
+    // Keep only last 30 summaries
+    localStorage.setItem(REFLECTION_STORAGE_KEY, JSON.stringify(summaries.slice(0, 30)));
+  } catch (e) {
+    console.error('Failed to save reflection summary:', e);
+  }
+  
+  return newSummary;
+};
+
+// Load reflection summaries
+const loadReflectionSummaries = (): ReflectionSummary[] => {
+  try {
+    const stored = localStorage.getItem(REFLECTION_STORAGE_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch {
+    return [];
+  }
+};
+
+// Format date for display
+const formatDate = (dateStr: string): string => {
+  const today = getLocalDateKey();
+  if (dateStr === today) return 'Today';
+  
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterdayStr = yesterday.toISOString().split('T')[0];
+  if (dateStr === yesterdayStr) return 'Yesterday';
+  
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+};
+
 const AIReflectionPage = () => {
   const [searchParams] = useSearchParams();
   const [messages, setMessages] = useState<Message[]>([]);
@@ -84,6 +174,8 @@ const AIReflectionPage = () => {
   const [dailyCount, setDailyCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [reflectionHistory, setReflectionHistory] = useState<ReflectionSummary[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
@@ -132,6 +224,9 @@ const AIReflectionPage = () => {
     // Load daily count from localStorage with local timezone support
     const { count } = getDailyAIUsage();
     setDailyCount(count);
+    
+    // Load reflection history
+    setReflectionHistory(loadReflectionSummaries());
 
     // Chat is ephemeral for privacy - not persisted to storage
     // This protects sensitive emotional/spiritual conversations
@@ -248,6 +343,10 @@ const AIReflectionPage = () => {
       // Limit stored messages to prevent memory issues
       setMessages(prev => [...prev.slice(-MAX_CHAT_MESSAGES + 1), assistantMessage]);
 
+      // Save reflection summary and update history
+      const newSummary = saveReflectionSummary(userMessage.content);
+      setReflectionHistory(prev => [newSummary, ...prev].slice(0, 30));
+
       // Update daily count with local timezone support
       const newCount = incrementAIUsage(dailyCount);
       setDailyCount(newCount);
@@ -283,6 +382,16 @@ const AIReflectionPage = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {reflectionHistory.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowHistory(!showHistory)}
+                className={`text-muted-foreground hover:text-foreground ${showHistory ? 'bg-secondary' : ''}`}
+              >
+                <History className="w-4 h-4" />
+              </Button>
+            )}
             {!isAuthenticated ? (
               <Button
                 variant="ghost"
@@ -333,6 +442,43 @@ const AIReflectionPage = () => {
           💡 Your conversation is private and will be cleared when you refresh this page
         </div>
       </div>
+
+      {/* Reflection History Panel */}
+      <AnimatePresence>
+        {showHistory && reflectionHistory.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="px-4 mb-4 flex-shrink-0 max-w-lg mx-auto w-full overflow-hidden"
+          >
+            <Card className="sabrify-card">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <History className="w-4 h-4 text-primary" />
+                  <h3 className="text-sm font-medium text-foreground">Your Journey</h3>
+                </div>
+                <div className="space-y-2 max-h-48 overflow-y-auto">
+                  {reflectionHistory.map((reflection) => (
+                    <div
+                      key={reflection.id}
+                      className="flex items-center gap-3 p-2 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors"
+                    >
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground min-w-[60px]">
+                        <Calendar className="w-3 h-3" />
+                        {formatDate(reflection.date)}
+                      </div>
+                      <p className="text-sm text-foreground capitalize flex-1">
+                        {reflection.summary}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Messages */}
       <main className="flex-1 overflow-y-auto px-4 space-y-4 max-w-lg mx-auto w-full">

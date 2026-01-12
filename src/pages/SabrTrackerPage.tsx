@@ -6,7 +6,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChevronLeft, Leaf, Calendar, Heart, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { format, isToday, parseISO } from 'date-fns';
+import { format, isToday as isDateToday, parseISO } from 'date-fns';
+import { getDailySabrPrompt, getLocalDateKey, isToday as isLocalToday } from '@/lib/dailyContent';
 
 interface SabrReflection {
   id: string;
@@ -20,22 +21,26 @@ const SabrTrackerPage = () => {
   const [reflection, setReflection] = useState('');
   const [hasReflectedToday, setHasReflectedToday] = useState(false);
   const [pastReflection, setPastReflection] = useState<SabrReflection | null>(null);
+  const [dailyPrompt, setDailyPrompt] = useState(getDailySabrPrompt());
 
   useEffect(() => {
+    // Set daily prompt
+    setDailyPrompt(getDailySabrPrompt());
+    
     // Load reflections from localStorage
     const stored = localStorage.getItem('sakina-sabr-reflections');
     if (stored) {
       const parsed: SabrReflection[] = JSON.parse(stored);
       setReflections(parsed);
       
-      // Check if user has reflected today
-      const today = new Date().toISOString().split('T')[0];
-      const todayReflection = parsed.find(r => r.date.startsWith(today));
+      // Check if user has reflected today (using local timezone)
+      const todayKey = getLocalDateKey();
+      const todayReflection = parsed.find(r => r.date.startsWith(todayKey));
       setHasReflectedToday(!!todayReflection);
       
       // Occasionally surface a past reflection (20% chance)
       if (parsed.length > 1 && Math.random() < 0.2) {
-        const oldReflections = parsed.filter(r => !isToday(parseISO(r.date)));
+        const oldReflections = parsed.filter(r => !isDateToday(parseISO(r.date)));
         if (oldReflections.length > 0) {
           setPastReflection(oldReflections[Math.floor(Math.random() * oldReflections.length)]);
         }
@@ -173,7 +178,7 @@ const SabrTrackerPage = () => {
                 <CardContent className="p-6 space-y-4">
                   <div className="text-center">
                     <p className="text-lg font-heading text-foreground mb-2">
-                      "You showed patience today by…"
+                      "{dailyPrompt}"
                     </p>
                     <p className="text-sm text-muted-foreground">
                       Write freely. This is private and only for you.

@@ -4,7 +4,8 @@ import { AyahCard } from '@/components/AyahCard';
 import { MoodSelector } from '@/components/MoodSelector';
 import { DuaCard } from '@/components/DuaCard';
 import { BottomNav } from '@/components/BottomNav';
-import { getDailyAyah, getRandomDua, moodResponses, MoodType, Ayah, Dua } from '@/data/islamicContent';
+import { moodResponses, MoodType, Ayah, Dua } from '@/data/islamicContent';
+import { getDailyAyah, getMoodContent } from '@/lib/dailyContent';
 import { Heart, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -20,12 +21,12 @@ const Index = () => {
   const handleMoodSelect = (mood: MoodType) => {
     setSelectedMood(mood);
     const response = moodResponses[mood];
-    const randomAyah = response.ayat[Math.floor(Math.random() * response.ayat.length)];
-    const randomDua = response.duas[Math.floor(Math.random() * response.duas.length)];
+    // Use deterministic mood content with avoidance of recent items
+    const { ayah, dua } = getMoodContent(mood, response.ayat, response.duas);
     setMoodContent({
       message: response.message,
-      ayah: randomAyah,
-      dua: randomDua
+      ayah,
+      dua
     });
   };
 

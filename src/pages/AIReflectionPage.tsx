@@ -11,6 +11,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useSubscription } from '@/hooks/useSubscription';
 import { PremiumBanner } from '@/components/PremiumBanner';
+import { getDailyAIUsage, incrementAIUsage, getLocalDateKey } from '@/lib/dailyContent';
 import { AuthModal } from '@/components/AuthModal';
 
 interface AIResponse {
@@ -89,17 +90,9 @@ const AIReflectionPage = () => {
   }, []);
 
   useEffect(() => {
-    // Load daily count from localStorage
-    const today = new Date().toISOString().split('T')[0];
-    const stored = localStorage.getItem('sakina-ai-usage');
-    if (stored) {
-      const parsed = JSON.parse(stored);
-      if (parsed.date === today) {
-        setDailyCount(parsed.count);
-      } else {
-        localStorage.setItem('sakina-ai-usage', JSON.stringify({ date: today, count: 0 }));
-      }
-    }
+    // Load daily count from localStorage with local timezone support
+    const { count } = getDailyAIUsage();
+    setDailyCount(count);
 
     // Load chat history from session
     const history = sessionStorage.getItem('sakina-ai-chat');
@@ -197,11 +190,9 @@ const AIReflectionPage = () => {
 
       setMessages(prev => [...prev, assistantMessage]);
 
-      // Update daily count
-      const newCount = dailyCount + 1;
+      // Update daily count with local timezone support
+      const newCount = incrementAIUsage(dailyCount);
       setDailyCount(newCount);
-      const today = new Date().toISOString().split('T')[0];
-      localStorage.setItem('sakina-ai-usage', JSON.stringify({ date: today, count: newCount }));
 
     } catch (error) {
       console.error('AI reflection error:', error);

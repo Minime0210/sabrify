@@ -55,44 +55,42 @@ export const useSubscription = () => {
   }, []);
 
   const openCheckout = useCallback(async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error('Please sign in to subscribe');
-      }
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      throw new Error('Please sign in to subscribe');
+    }
 
-      const { data, error } = await supabase.functions.invoke('create-checkout');
-      
-      if (error) throw error;
-      
-      if (data.url) {
-        window.open(data.url, '_blank');
-      }
-    } catch (error) {
-      console.error('Error opening checkout:', error);
-      throw error;
+    const { data, error } = await supabase.functions.invoke('create-checkout');
+    
+    if (error) throw error;
+    if (data.error) throw new Error(data.error);
+    
+    if (data.url) {
+      // Use location.href for better compatibility with popup blockers
+      window.location.href = data.url;
+    } else {
+      throw new Error('No checkout URL received');
     }
   }, []);
 
   const openCustomerPortal = useCallback(async () => {
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        throw new Error('Please sign in to manage subscription');
-      }
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (!session) {
+      throw new Error('Please sign in to manage subscription');
+    }
 
-      const { data, error } = await supabase.functions.invoke('customer-portal');
-      
-      if (error) throw error;
-      
-      if (data.url) {
-        window.open(data.url, '_blank');
-      }
-    } catch (error) {
-      console.error('Error opening customer portal:', error);
-      throw error;
+    const { data, error } = await supabase.functions.invoke('customer-portal');
+    
+    if (error) throw error;
+    if (data.error) throw new Error(data.error);
+    
+    if (data.url) {
+      // Use location.href for better compatibility
+      window.location.href = data.url;
+    } else {
+      throw new Error('No portal URL received');
     }
   }, []);
 

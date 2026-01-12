@@ -95,14 +95,14 @@ const ProfilePage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen sakina-gradient-bg flex items-center justify-center">
+      <div className="min-h-screen sabrify-gradient-bg flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen sakina-gradient-bg pb-24">
+    <div className="min-h-screen sabrify-gradient-bg pb-24">
       {/* Header */}
       <header className="pt-12 pb-6 px-6">
         <h1 className="text-xl font-heading font-medium text-foreground">Profile</h1>
@@ -114,7 +114,7 @@ const ProfilePage = () => {
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="sakina-card-elevated p-6"
+            className="sabrify-card-elevated p-6"
           >
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
@@ -132,7 +132,7 @@ const ProfilePage = () => {
           <motion.section
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="sakina-card-elevated p-6 text-center"
+            className="sabrify-card-elevated p-6 text-center"
           >
             <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
               <User className="w-8 h-8 text-primary" />
@@ -143,7 +143,7 @@ const ProfilePage = () => {
             </p>
             <Button
               onClick={() => setShowAuthModal(true)}
-              className="sakina-gradient-primary text-primary-foreground"
+              className="sabrify-gradient-primary text-primary-foreground"
             >
               Sign In
             </Button>
@@ -160,7 +160,7 @@ const ProfilePage = () => {
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide px-2">
             Subscription
           </h2>
-          <div className={`sakina-card p-4 ${isPremium ? 'ring-2 ring-primary/50' : ''}`}>
+          <div className={`sabrify-card p-4 ${isPremium ? 'ring-2 ring-primary/50' : ''}`}>
             <div className="flex items-start gap-4">
               <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
                 isPremium ? 'bg-primary/20' : 'bg-muted'
@@ -205,7 +205,7 @@ const ProfilePage = () => {
                   </Button>
                 ) : (
                   <Button
-                    className="w-full sakina-gradient-primary text-primary-foreground"
+                    className="w-full sabrify-gradient-primary text-primary-foreground"
                     onClick={handleUpgrade}
                   >
                     <Crown className="w-4 h-4 mr-2" />
@@ -224,7 +224,7 @@ const ProfilePage = () => {
 
           {/* Premium Benefits */}
           {!isPremium && (
-            <div className="sakina-card p-4">
+            <div className="sabrify-card p-4">
               <h4 className="text-sm font-medium text-foreground mb-3">Premium Benefits</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
@@ -254,11 +254,11 @@ const ProfilePage = () => {
           <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide px-2">
             Quick Links
           </h2>
-          <Link to="/settings" className="sakina-card p-4 flex items-center gap-3 hover:bg-secondary/50 transition-colors">
+          <Link to="/settings" className="sabrify-card p-4 flex items-center gap-3 hover:bg-secondary/50 transition-colors">
             <Settings className="w-5 h-5 text-muted-foreground" />
             <span className="font-medium text-foreground">Settings</span>
           </Link>
-          <Link to="/terms" className="sakina-card p-4 flex items-center gap-3 hover:bg-secondary/50 transition-colors">
+          <Link to="/terms" className="sabrify-card p-4 flex items-center gap-3 hover:bg-secondary/50 transition-colors">
             <FileText className="w-5 h-5 text-muted-foreground" />
             <span className="font-medium text-foreground">Terms & Privacy</span>
           </Link>

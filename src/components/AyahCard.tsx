@@ -12,7 +12,7 @@ export const AyahCard = ({ ayah, showTransliteration = true }: AyahCardProps) =>
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
-      className="sakina-card-elevated"
+      className="sabrify-card-elevated"
     >
       <div className="space-y-6">
         {/* Arabic Text */}

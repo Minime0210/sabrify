@@ -12,7 +12,7 @@ export const DuaCard = ({ dua, compact = false }: DuaCardProps) => {
       initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={`sakina-card ${compact ? 'p-4' : 'p-6'}`}
+      className={`sabrify-card ${compact ? 'p-4' : 'p-6'}`}
     >
       <div className="space-y-4">
         {/* Occasion Badge */}

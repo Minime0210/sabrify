@@ -177,11 +177,6 @@
     background: var(--gradient-calm);
   }
 
-  /* Backwards compatibility aliases */
-  .sakina-card { @apply sabrify-card; }
-  .sakina-card-elevated { @apply sabrify-card-elevated; }
-  .sakina-gradient-bg { background: var(--gradient-serene); }
-  .sakina-gradient-primary { background: var(--gradient-calm); }
 
   .arabic-text {
     font-family: var(--font-arabic);

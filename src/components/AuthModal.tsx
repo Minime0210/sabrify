@@ -50,7 +50,7 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
         if (error) throw error;
         toast({
           title: 'Account created',
-          description: 'Welcome to Sakina! You can now use all features.',
+          description: 'Welcome to Sabrify! You can now use all features.',
         });
         onSuccess?.();
         onClose();
@@ -105,7 +105,7 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          className="sakina-card-elevated w-full max-w-md"
+          className="sabrify-card-elevated w-full max-w-md"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex items-center justify-between mb-6">
@@ -216,7 +216,7 @@ export const AuthModal = ({ isOpen, onClose, onSuccess }: AuthModalProps) => {
 
               <Button
                 type="submit"
-                className="w-full sakina-gradient-primary text-primary-foreground"
+                className="w-full sabrify-gradient-primary text-primary-foreground"
                 disabled={isLoading}
               >
                 {isLoading ? (

@@ -12,13 +12,13 @@ self.addEventListener('push', function(event) {
       type: data.type || 'general'
     },
     actions: [
-      { action: 'open', title: 'Open Sakina' },
+      { action: 'open', title: 'Open Sabrify' },
       { action: 'dismiss', title: 'Dismiss' }
     ]
   };
 
   event.waitUntil(
-    self.registration.showNotification(data.title || 'Sakina Reminder', options)
+    self.registration.showNotification(data.title || 'Sabrify Reminder', options)
   );
 });
 

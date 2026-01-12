@@ -113,7 +113,7 @@ const SabrTrackerPage = () => {
   };
 
   return (
-    <div className="min-h-screen sakina-gradient-bg pb-24">
+    <div className="min-h-screen sabrify-gradient-bg pb-24">
       {/* Header */}
       <header className="pt-12 pb-6 px-6">
         <div className="flex items-center gap-3">
@@ -178,8 +178,8 @@ const SabrTrackerPage = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <Card className="sakina-card-elevated overflow-hidden">
-              <div className="sakina-gradient-primary p-6">
+            <Card className="sabrify-card-elevated overflow-hidden">
+              <div className="sabrify-gradient-primary p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 rounded-full bg-primary-foreground/20 flex items-center justify-center">
                     <Leaf className="w-6 h-6 text-primary-foreground" />
@@ -216,7 +216,7 @@ const SabrTrackerPage = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
             >
-              <Card className="sakina-card">
+              <Card className="sabrify-card">
                 <CardContent className="p-6 space-y-4">
                   <div className="text-center">
                     <p className="text-lg font-heading text-foreground mb-2">
@@ -245,7 +245,7 @@ const SabrTrackerPage = () => {
                     <Button
                       onClick={saveReflection}
                       disabled={!reflection.trim()}
-                      className="flex-1 sakina-gradient-primary text-primary-foreground"
+                      className="flex-1 sabrify-gradient-primary text-primary-foreground"
                     >
                       Save
                     </Button>
@@ -262,7 +262,7 @@ const SabrTrackerPage = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <Card className="sakina-card bg-secondary/50">
+            <Card className="sabrify-card bg-secondary/50">
               <CardContent className="p-6 text-center">
                 <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto mb-4">
                   <Leaf className="w-8 h-8 text-primary" />
@@ -296,7 +296,7 @@ const SabrTrackerPage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05 }}
                 >
-                  <Card className="sakina-card">
+                  <Card className="sabrify-card">
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
                         <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center flex-shrink-0">

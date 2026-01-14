@@ -13,7 +13,7 @@ const logStep = (step: string, details?: any) => {
 };
 
 // Sabrify Premium - $4.99/month
-const PREMIUM_PRICE_ID = "price_1Soq8yEOB7eaacvnOgtOIH5a";
+const PREMIUM_PRICE_ID = "price_1SpHVBEOB7eaacvnilixOGq3";
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {

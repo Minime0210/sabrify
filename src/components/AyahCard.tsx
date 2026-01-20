@@ -1,12 +1,30 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { BookOpen } from 'lucide-react';
 import { Ayah } from '@/data/islamicContent';
+import { Button } from '@/components/ui/button';
 
 interface AyahCardProps {
   ayah: Ayah;
   showTransliteration?: boolean;
+  showBackstoryButton?: boolean;
 }
 
-export const AyahCard = ({ ayah, showTransliteration = true }: AyahCardProps) => {
+export const AyahCard = ({ ayah, showTransliteration = true, showBackstoryButton = true }: AyahCardProps) => {
+  const navigate = useNavigate();
+
+  const handleLearnBackstory = () => {
+    navigate('/backstory', {
+      state: {
+        type: 'ayah',
+        arabic: ayah.arabic,
+        translation: ayah.translation,
+        transliteration: ayah.transliteration,
+        reference: ayah.reference,
+      },
+    });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -43,6 +61,21 @@ export const AyahCard = ({ ayah, showTransliteration = true }: AyahCardProps) =>
         <p className="text-center text-sm text-muted-foreground">
           — {ayah.reference}
         </p>
+
+        {/* Backstory Button */}
+        {showBackstoryButton && (
+          <div className="flex justify-center pt-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLearnBackstory}
+              className="text-primary hover:text-primary/80 hover:bg-primary/10 gap-2"
+            >
+              <BookOpen className="h-4 w-4" />
+              Learn the backstory
+            </Button>
+          </div>
+        )}
       </div>
     </motion.div>
   );

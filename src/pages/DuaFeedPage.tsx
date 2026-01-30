@@ -1,13 +1,14 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ChevronDown, Heart, Bookmark, ArrowLeft, X, BookOpen } from 'lucide-react';
+import { ChevronDown, Heart, Bookmark, ArrowLeft, X, BookOpen, Volume2, VolumeX } from 'lucide-react';
 import { duas, Dua } from '@/data/islamicContent';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
+import { useDuaSpeech } from '@/hooks/useDuaSpeech';
 const DuaFeedPage = () => {
   const navigate = useNavigate();
+  const { speak, isSpeaking, currentDuaId } = useDuaSpeech();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [savedDuas, setSavedDuas] = useState<Set<string>>(() => {
     try {
@@ -152,13 +153,26 @@ const DuaFeedPage = () => {
               key={`${dua.id}-${index}`}
               className={`relative h-full w-full snap-start snap-always flex items-center bg-gradient-to-br ${gradients[index % gradients.length]}`}
             >
-              {/* Content Area - takes most of the width, leaves room for buttons */}
+              {/* Content Area - tappable to speak */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: currentIndex === index ? 1 : 0.5, scale: currentIndex === index ? 1 : 0.95 }}
                 transition={{ duration: 0.3 }}
-                className="flex-1 text-center space-y-3 md:space-y-6 px-4 md:px-8 py-20 mr-16 md:mr-20"
+                onClick={() => speak(actualDuaId, dua.arabic, dua.translation)}
+                className="flex-1 text-center space-y-3 md:space-y-6 px-4 md:px-8 py-20 mr-16 md:mr-20 cursor-pointer active:scale-[0.99] transition-transform"
               >
+                {/* Speaking indicator */}
+                {isSpeaking && currentDuaId === actualDuaId && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="flex items-center justify-center gap-2 text-primary"
+                  >
+                    <Volume2 className="w-4 h-4 animate-pulse" />
+                    <span className="text-xs">Tap to stop</span>
+                  </motion.div>
+                )}
+
                 {/* Arabic Text */}
                 <div className="space-y-2">
                   <p className="text-2xl md:text-4xl font-arabic leading-loose text-foreground">
@@ -184,6 +198,18 @@ const DuaFeedPage = () => {
                     {dua.occasion}
                   </span>
                 </div>
+
+                {/* Tap to listen hint */}
+                {!isSpeaking && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.6 }}
+                    className="flex items-center justify-center gap-1 text-muted-foreground"
+                  >
+                    <Volume2 className="w-3 h-3" />
+                    <span className="text-xs">Tap to listen</span>
+                  </motion.div>
+                )}
               </motion.div>
 
               {/* Side Actions - Fixed width column on right */}

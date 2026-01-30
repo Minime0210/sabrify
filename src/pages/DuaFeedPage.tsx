@@ -114,7 +114,7 @@ const DuaFeedPage = () => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
             className="rounded-full"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -150,7 +150,7 @@ const DuaFeedPage = () => {
           return (
             <div
               key={`${dua.id}-${index}`}
-              className={`h-full w-full snap-start snap-always flex items-center justify-center p-6 bg-gradient-to-br ${gradients[index % gradients.length]}`}
+              className={`relative h-full w-full snap-start snap-always flex items-center justify-center p-6 bg-gradient-to-br ${gradients[index % gradients.length]}`}
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}

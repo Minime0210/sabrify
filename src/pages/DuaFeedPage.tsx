@@ -150,17 +150,17 @@ const DuaFeedPage = () => {
           return (
             <div
               key={`${dua.id}-${index}`}
-              className={`relative h-full w-full snap-start snap-always flex items-center justify-center p-6 bg-gradient-to-br ${gradients[index % gradients.length]}`}
+              className={`relative h-full w-full snap-start snap-always flex items-center justify-center px-4 py-20 md:p-6 bg-gradient-to-br ${gradients[index % gradients.length]}`}
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: currentIndex === index ? 1 : 0.5, scale: currentIndex === index ? 1 : 0.95 }}
                 transition={{ duration: 0.3 }}
-                className="max-w-md w-full text-center space-y-8"
+                className="max-w-md w-full text-center space-y-4 md:space-y-8 pr-16 md:pr-0"
               >
                 {/* Arabic Text */}
                 <div className="space-y-2">
-                  <p className="text-3xl md:text-4xl font-arabic leading-loose text-foreground">
+                  <p className="text-2xl md:text-4xl font-arabic leading-loose text-foreground">
                     {dua.arabic}
                   </p>
                 </div>
@@ -186,7 +186,7 @@ const DuaFeedPage = () => {
               </motion.div>
 
               {/* Side Actions */}
-              <div className="absolute right-4 bottom-1/3 flex flex-col gap-6">
+              <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 flex flex-col gap-4 md:gap-6">
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={() => toggleSave(actualDuaId)}

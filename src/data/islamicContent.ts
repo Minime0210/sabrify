@@ -156,6 +156,102 @@ export const duas: Dua[] = [
     transliteration: 'Allāhumma \'āfinī fī badanī, Allāhumma \'āfinī fī sam\'ī, Allāhumma \'āfinī fī baṣarī',
     occasion: 'Daily wellness',
     category: 'morning'
+  },
+  {
+    id: '7',
+    arabic: 'رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ',
+    translation: 'Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire.',
+    transliteration: 'Rabbanā ātinā fī ad-dunyā ḥasanatan wa fī al-ākhirati ḥasanatan wa qinā \'adhāb an-nār',
+    occasion: 'General supplication',
+    category: 'gratitude'
+  },
+  {
+    id: '8',
+    arabic: 'اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ',
+    translation: 'O Allah, I ask You for pardon and well-being.',
+    transliteration: 'Allāhumma innī as\'aluka al-\'afwa wal-\'āfiyah',
+    occasion: 'Daily protection',
+    category: 'calm'
+  },
+  {
+    id: '9',
+    arabic: 'اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ',
+    translation: 'O Allah, help me to remember You, to thank You, and to worship You in the best way.',
+    transliteration: 'Allāhumma a\'innī \'alā dhikrika wa shukrika wa ḥusni \'ibādatik',
+    occasion: 'After prayer',
+    category: 'gratitude'
+  },
+  {
+    id: '10',
+    arabic: 'رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي',
+    translation: 'My Lord, expand for me my chest and ease for me my task.',
+    transliteration: 'Rabbi ishraḥ lī ṣadrī wa yassir lī amrī',
+    occasion: 'Before a difficult task',
+    category: 'anxiety'
+  },
+  {
+    id: '11',
+    arabic: 'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنْ شَرِّ مَا عَمِلْتُ وَمِنْ شَرِّ مَا لَمْ أَعْمَلْ',
+    translation: 'O Allah, I seek refuge in You from the evil of what I have done and from the evil of what I have not done.',
+    transliteration: 'Allāhumma innī a\'ūdhu bika min sharri mā \'amiltu wa min sharri mā lam a\'mal',
+    occasion: 'Evening reflection',
+    category: 'evening'
+  },
+  {
+    id: '12',
+    arabic: 'اللَّهُمَّ أَصْلِحْ لِي دِينِي وَدُنْيَايَ وَآخِرَتِي',
+    translation: 'O Allah, rectify for me my religion, my worldly affairs, and my Hereafter.',
+    transliteration: 'Allāhumma aṣliḥ lī dīnī wa dunyāya wa ākhiratī',
+    occasion: 'Comprehensive prayer',
+    category: 'morning'
+  },
+  {
+    id: '13',
+    arabic: 'يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ',
+    translation: 'O Ever-Living, O Sustainer, in Your mercy I seek relief.',
+    transliteration: 'Yā Ḥayyu yā Qayyūm bi-raḥmatika astaghīth',
+    occasion: 'When in distress',
+    category: 'anxiety'
+  },
+  {
+    id: '14',
+    arabic: 'اللَّهُمَّ لَا سَهْلَ إِلَّا مَا جَعَلْتَهُ سَهْلًا',
+    translation: 'O Allah, there is no ease except what You make easy.',
+    transliteration: 'Allāhumma lā sahla illā mā ja\'altahu sahlā',
+    occasion: 'Facing difficulty',
+    category: 'calm'
+  },
+  {
+    id: '15',
+    arabic: 'رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا',
+    translation: 'Our Lord, let not our hearts deviate after You have guided us.',
+    transliteration: 'Rabbanā lā tuzigh qulūbanā ba\'da idh hadaytanā',
+    occasion: 'Seeking guidance',
+    category: 'calm'
+  },
+  {
+    id: '16',
+    arabic: 'اللَّهُمَّ اغْفِرْ لِي وَارْحَمْنِي وَاهْدِنِي وَعَافِنِي وَارْزُقْنِي',
+    translation: 'O Allah, forgive me, have mercy on me, guide me, grant me well-being, and provide for me.',
+    transliteration: 'Allāhumma ighfir lī warḥamnī wahdinī wa \'āfinī warzuqnī',
+    occasion: 'Between prostrations',
+    category: 'gratitude'
+  },
+  {
+    id: '17',
+    arabic: 'أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ',
+    translation: 'We have reached the evening and the dominion belongs to Allah.',
+    transliteration: 'Amsaynā wa amsal-mulku lillāh',
+    occasion: 'Evening remembrance',
+    category: 'evening'
+  },
+  {
+    id: '18',
+    arabic: 'اللَّهُمَّ بِكَ أَصْبَحْنَا وَبِكَ أَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوتُ',
+    translation: 'O Allah, by You we enter the morning and by You we enter the evening, by You we live and by You we die.',
+    transliteration: 'Allāhumma bika aṣbaḥnā wa bika amsaynā wa bika naḥyā wa bika namūt',
+    occasion: 'Morning/Evening',
+    category: 'morning'
   }
 ];
 

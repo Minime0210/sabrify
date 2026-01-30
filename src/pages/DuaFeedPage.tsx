@@ -1,37 +1,68 @@
-import { motion } from 'framer-motion';
-import { useState, useRef } from 'react';
-import { ChevronUp, ChevronDown, Share2, Heart, BookOpen, ArrowLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { ChevronDown, Heart, Bookmark, ArrowLeft, X } from 'lucide-react';
 import { duas } from '@/data/islamicContent';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const DuaFeedPage = () => {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [likedDuas, setLikedDuas] = useState<Set<string>>(new Set());
+  const [savedDuas, setSavedDuas] = useState<Set<string>>(() => {
+    const stored = localStorage.getItem('savedDuas');
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+  });
+  const [showSaved, setShowSaved] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  // Create infinite loop by tripling the duas array
+  const infiniteDuas = [...duas, ...duas, ...duas];
+  const middleStartIndex = duas.length;
+
+  useEffect(() => {
+    // Start from the middle section for seamless looping
+    if (containerRef.current) {
+      const itemHeight = containerRef.current.clientHeight;
+      containerRef.current.scrollTop = middleStartIndex * itemHeight;
+      setCurrentIndex(middleStartIndex);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('savedDuas', JSON.stringify([...savedDuas]));
+  }, [savedDuas]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
     const scrollTop = container.scrollTop;
     const itemHeight = container.clientHeight;
     const newIndex = Math.round(scrollTop / itemHeight);
-    if (newIndex !== currentIndex && newIndex >= 0 && newIndex < duas.length) {
+    
+    if (newIndex !== currentIndex) {
       setCurrentIndex(newIndex);
+      
+      // Reset to middle section when reaching edges for infinite loop
+      if (newIndex <= duas.length * 0.5) {
+        setTimeout(() => {
+          if (containerRef.current) {
+            containerRef.current.scrollTop = (newIndex + duas.length) * itemHeight;
+            setCurrentIndex(newIndex + duas.length);
+          }
+        }, 50);
+      } else if (newIndex >= duas.length * 2.5) {
+        setTimeout(() => {
+          if (containerRef.current) {
+            containerRef.current.scrollTop = (newIndex - duas.length) * itemHeight;
+            setCurrentIndex(newIndex - duas.length);
+          }
+        }, 50);
+      }
     }
   };
 
-  const scrollToIndex = (index: number) => {
-    if (containerRef.current && index >= 0 && index < duas.length) {
-      containerRef.current.scrollTo({
-        top: index * containerRef.current.clientHeight,
-        behavior: 'smooth'
-      });
-    }
-  };
-
-  const toggleLike = (duaId: string) => {
-    setLikedDuas(prev => {
+  const toggleSave = (duaId: string) => {
+    setSavedDuas(prev => {
       const newSet = new Set(prev);
       if (newSet.has(duaId)) {
         newSet.delete(duaId);
@@ -42,33 +73,7 @@ const DuaFeedPage = () => {
     });
   };
 
-  const handleShare = async (dua: typeof duas[0]) => {
-    const shareText = `${dua.arabic}\n\n"${dua.translation}"\n\n— ${dua.occasion}`;
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Dua from Sabrify',
-          text: shareText,
-        });
-      } catch (err) {
-        // User cancelled or error
-      }
-    } else {
-      await navigator.clipboard.writeText(shareText);
-    }
-  };
-
-  const handleBackstory = (dua: typeof duas[0]) => {
-    navigate('/backstory', { 
-      state: { 
-        type: 'dua',
-        arabic: dua.arabic,
-        translation: dua.translation,
-        reference: dua.occasion
-      } 
-    });
-  };
+  const savedDuasList = duas.filter(dua => savedDuas.has(dua.id));
 
   // Gradient backgrounds for variety
   const gradients = [
@@ -93,7 +98,19 @@ const DuaFeedPage = () => {
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <h1 className="font-heading text-lg font-medium">Daily Duas</h1>
-          <div className="w-10" /> {/* Spacer */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setShowSaved(true)}
+            className="rounded-full relative"
+          >
+            <Bookmark className="w-5 h-5" />
+            {savedDuas.size > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-primary text-primary-foreground text-xs rounded-full flex items-center justify-center">
+                {savedDuas.size}
+              </span>
+            )}
+          </Button>
         </div>
       </div>
 
@@ -104,9 +121,9 @@ const DuaFeedPage = () => {
         className="h-full w-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
         style={{ scrollSnapType: 'y mandatory' }}
       >
-        {duas.map((dua, index) => (
+        {infiniteDuas.map((dua, index) => (
           <div
-            key={dua.id}
+            key={`${dua.id}-${index}`}
             className={`h-full w-full snap-start snap-always flex items-center justify-center p-6 bg-gradient-to-br ${gradients[index % gradients.length]}`}
           >
             <motion.div
@@ -140,90 +157,116 @@ const DuaFeedPage = () => {
                   {dua.occasion}
                 </span>
               </div>
-
-              {/* Progress Indicator */}
-              <div className="flex justify-center gap-1.5 pt-4">
-                {duas.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => scrollToIndex(i)}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${
-                      i === currentIndex 
-                        ? 'w-6 bg-primary' 
-                        : 'w-1.5 bg-muted-foreground/30 hover:bg-muted-foreground/50'
-                    }`}
-                  />
-                ))}
-              </div>
             </motion.div>
 
             {/* Side Actions */}
             <div className="absolute right-4 bottom-1/3 flex flex-col gap-6">
               <motion.button
                 whileTap={{ scale: 0.9 }}
-                onClick={() => toggleLike(dua.id)}
+                onClick={() => toggleSave(dua.id)}
                 className="flex flex-col items-center gap-1"
               >
                 <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
-                  likedDuas.has(dua.id) 
-                    ? 'bg-red-500/20 text-red-500' 
+                  savedDuas.has(dua.id) 
+                    ? 'bg-primary/20 text-primary' 
                     : 'bg-secondary/50 text-foreground'
                 }`}>
-                  <Heart className={`w-6 h-6 ${likedDuas.has(dua.id) ? 'fill-current' : ''}`} />
+                  <Heart className={`w-6 h-6 ${savedDuas.has(dua.id) ? 'fill-current' : ''}`} />
                 </div>
                 <span className="text-xs text-muted-foreground">Save</span>
-              </motion.button>
-
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={() => handleBackstory(dua)}
-                className="flex flex-col items-center gap-1"
-              >
-                <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center">
-                  <BookOpen className="w-6 h-6 text-foreground" />
-                </div>
-                <span className="text-xs text-muted-foreground">Story</span>
-              </motion.button>
-
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={() => handleShare(dua)}
-                className="flex flex-col items-center gap-1"
-              >
-                <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center">
-                  <Share2 className="w-6 h-6 text-foreground" />
-                </div>
-                <span className="text-xs text-muted-foreground">Share</span>
               </motion.button>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Navigation Hints */}
+      {/* Navigation Hint */}
       <div className="absolute left-1/2 -translate-x-1/2 bottom-8 flex flex-col items-center gap-2 pointer-events-none">
-        {currentIndex < duas.length - 1 && (
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="text-muted-foreground/50"
-          >
-            <ChevronDown className="w-6 h-6" />
-          </motion.div>
-        )}
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5 }}
+          className="text-muted-foreground/50"
+        >
+          <ChevronDown className="w-6 h-6" />
+        </motion.div>
       </div>
 
-      {currentIndex > 0 && (
-        <div className="absolute left-1/2 -translate-x-1/2 top-20 flex flex-col items-center pointer-events-none">
+      {/* Saved Duas Modal */}
+      <AnimatePresence>
+        {showSaved && (
           <motion.div
-            animate={{ y: [0, -8, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5 }}
-            className="text-muted-foreground/50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm"
           >
-            <ChevronUp className="w-6 h-6" />
+            <div className="h-full flex flex-col max-w-lg mx-auto">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between p-4 border-b border-border">
+                <h2 className="font-heading text-lg font-medium">Saved Duas</h2>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowSaved(false)}
+                  className="rounded-full"
+                >
+                  <X className="w-5 h-5" />
+                </Button>
+              </div>
+
+              {/* Saved List */}
+              <ScrollArea className="flex-1 p-4">
+                {savedDuasList.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center h-64 text-center">
+                    <Bookmark className="w-12 h-12 text-muted-foreground/30 mb-4" />
+                    <p className="text-muted-foreground">No saved duas yet</p>
+                    <p className="text-sm text-muted-foreground/70 mt-1">
+                      Tap the heart icon to save duas
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {savedDuasList.map((dua) => (
+                      <motion.div
+                        key={dua.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="sabrify-card p-4 space-y-3"
+                      >
+                        <p className="text-xl font-arabic text-right leading-relaxed text-foreground">
+                          {dua.arabic}
+                        </p>
+                        {dua.transliteration && (
+                          <p className="text-xs text-muted-foreground italic">
+                            {dua.transliteration}
+                          </p>
+                        )}
+                        <p className="text-sm text-foreground/80">
+                          "{dua.translation}"
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground bg-secondary/50 px-2 py-1 rounded-full">
+                            {dua.occasion}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleSave(dua.id)}
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <Heart className="w-4 h-4 fill-current mr-1" />
+                            Remove
+                          </Button>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                )}
+              </ScrollArea>
+            </div>
           </motion.div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </div>
   );
 };

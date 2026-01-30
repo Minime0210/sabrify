@@ -150,13 +150,14 @@ const DuaFeedPage = () => {
           return (
             <div
               key={`${dua.id}-${index}`}
-              className={`relative h-full w-full snap-start snap-always flex items-center justify-center px-4 py-20 md:p-6 bg-gradient-to-br ${gradients[index % gradients.length]}`}
+              className={`relative h-full w-full snap-start snap-always flex items-center bg-gradient-to-br ${gradients[index % gradients.length]}`}
             >
+              {/* Content Area - takes most of the width, leaves room for buttons */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: currentIndex === index ? 1 : 0.5, scale: currentIndex === index ? 1 : 0.95 }}
                 transition={{ duration: 0.3 }}
-                className="max-w-md w-full text-center space-y-4 md:space-y-8 pr-16 md:pr-0"
+                className="flex-1 text-center space-y-3 md:space-y-6 px-4 md:px-8 py-20 mr-16 md:mr-20"
               >
                 {/* Arabic Text */}
                 <div className="space-y-2">
@@ -185,32 +186,32 @@ const DuaFeedPage = () => {
                 </div>
               </motion.div>
 
-              {/* Side Actions */}
-              <div className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 flex flex-col gap-4 md:gap-6">
+              {/* Side Actions - Fixed width column on right */}
+              <div className="absolute right-1 md:right-3 top-1/2 -translate-y-1/2 flex flex-col items-center gap-3 md:gap-5 w-14 md:w-16">
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={() => toggleSave(actualDuaId)}
-                  className="flex flex-col items-center gap-1"
+                  className="flex flex-col items-center gap-0.5"
                 >
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
+                  <div className={`w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-colors ${
                     isSaved 
                       ? 'bg-primary/20 text-primary' 
                       : 'bg-secondary/50 text-foreground'
                   }`}>
-                    <Heart className={`w-6 h-6 ${isSaved ? 'fill-current' : ''}`} />
+                    <Heart className={`w-5 h-5 md:w-6 md:h-6 ${isSaved ? 'fill-current' : ''}`} />
                   </div>
-                  <span className="text-xs text-muted-foreground">Save</span>
+                  <span className="text-[10px] md:text-xs text-muted-foreground">Save</span>
                 </motion.button>
 
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={() => handleBackstory(dua)}
-                  className="flex flex-col items-center gap-1"
+                  className="flex flex-col items-center gap-0.5"
                 >
-                  <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center">
-                    <BookOpen className="w-6 h-6 text-foreground" />
+                  <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary/50 flex items-center justify-center">
+                    <BookOpen className="w-5 h-5 md:w-6 md:h-6 text-foreground" />
                   </div>
-                  <span className="text-xs text-muted-foreground">Story</span>
+                  <span className="text-[10px] md:text-xs text-muted-foreground">Story</span>
                 </motion.button>
               </div>
             </div>

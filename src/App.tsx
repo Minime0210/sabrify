@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import DuaFeedPage from "./pages/DuaFeedPage";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/confirm-deletion" element={<ConfirmDeletionPage />} />
           <Route path="/backstory" element={<BackstoryPage />} />
+          <Route path="/dua-feed" element={<DuaFeedPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

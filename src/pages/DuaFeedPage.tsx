@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Heart, Bookmark, ArrowLeft, X } from 'lucide-react';
-import { duas } from '@/data/islamicContent';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { ChevronDown, Heart, Bookmark, ArrowLeft, X, BookOpen } from 'lucide-react';
+import { duas, Dua } from '@/data/islamicContent';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -10,8 +10,12 @@ const DuaFeedPage = () => {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [savedDuas, setSavedDuas] = useState<Set<string>>(() => {
-    const stored = localStorage.getItem('savedDuas');
-    return stored ? new Set(JSON.parse(stored)) : new Set();
+    try {
+      const stored = localStorage.getItem('savedDuas');
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch {
+      return new Set();
+    }
   });
   const [showSaved, setShowSaved] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -29,11 +33,12 @@ const DuaFeedPage = () => {
     }
   }, []);
 
+  // Save to localStorage whenever savedDuas changes
   useEffect(() => {
     localStorage.setItem('savedDuas', JSON.stringify([...savedDuas]));
   }, [savedDuas]);
 
-  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     const container = e.currentTarget;
     const scrollTop = container.scrollTop;
     const itemHeight = container.clientHeight;
@@ -59,6 +64,12 @@ const DuaFeedPage = () => {
         }, 50);
       }
     }
+  }, [currentIndex]);
+
+  // Get the actual dua ID from the infinite array index
+  const getActualDuaId = (index: number): string => {
+    const actualIndex = index % duas.length;
+    return duas[actualIndex].id;
   };
 
   const toggleSave = (duaId: string) => {
@@ -70,6 +81,17 @@ const DuaFeedPage = () => {
         newSet.add(duaId);
       }
       return newSet;
+    });
+  };
+
+  const handleBackstory = (dua: Dua) => {
+    navigate('/backstory', { 
+      state: { 
+        type: 'dua',
+        arabic: dua.arabic,
+        translation: dua.translation,
+        reference: dua.occasion
+      } 
     });
   };
 
@@ -121,63 +143,79 @@ const DuaFeedPage = () => {
         className="h-full w-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide"
         style={{ scrollSnapType: 'y mandatory' }}
       >
-        {infiniteDuas.map((dua, index) => (
-          <div
-            key={`${dua.id}-${index}`}
-            className={`h-full w-full snap-start snap-always flex items-center justify-center p-6 bg-gradient-to-br ${gradients[index % gradients.length]}`}
-          >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: currentIndex === index ? 1 : 0.5, scale: currentIndex === index ? 1 : 0.95 }}
-              transition={{ duration: 0.3 }}
-              className="max-w-md w-full text-center space-y-8"
+        {infiniteDuas.map((dua, index) => {
+          const actualDuaId = getActualDuaId(index);
+          const isSaved = savedDuas.has(actualDuaId);
+          
+          return (
+            <div
+              key={`${dua.id}-${index}`}
+              className={`h-full w-full snap-start snap-always flex items-center justify-center p-6 bg-gradient-to-br ${gradients[index % gradients.length]}`}
             >
-              {/* Arabic Text */}
-              <div className="space-y-2">
-                <p className="text-3xl md:text-4xl font-arabic leading-loose text-foreground">
-                  {dua.arabic}
-                </p>
-              </div>
-
-              {/* Transliteration */}
-              {dua.transliteration && (
-                <p className="text-sm text-muted-foreground italic">
-                  {dua.transliteration}
-                </p>
-              )}
-
-              {/* Translation */}
-              <p className="text-lg md:text-xl text-foreground/90 font-heading leading-relaxed">
-                "{dua.translation}"
-              </p>
-
-              {/* Occasion Badge */}
-              <div className="flex justify-center">
-                <span className="px-4 py-2 rounded-full bg-secondary/50 text-sm text-muted-foreground">
-                  {dua.occasion}
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Side Actions */}
-            <div className="absolute right-4 bottom-1/3 flex flex-col gap-6">
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={() => toggleSave(dua.id)}
-                className="flex flex-col items-center gap-1"
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: currentIndex === index ? 1 : 0.5, scale: currentIndex === index ? 1 : 0.95 }}
+                transition={{ duration: 0.3 }}
+                className="max-w-md w-full text-center space-y-8"
               >
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
-                  savedDuas.has(dua.id) 
-                    ? 'bg-primary/20 text-primary' 
-                    : 'bg-secondary/50 text-foreground'
-                }`}>
-                  <Heart className={`w-6 h-6 ${savedDuas.has(dua.id) ? 'fill-current' : ''}`} />
+                {/* Arabic Text */}
+                <div className="space-y-2">
+                  <p className="text-3xl md:text-4xl font-arabic leading-loose text-foreground">
+                    {dua.arabic}
+                  </p>
                 </div>
-                <span className="text-xs text-muted-foreground">Save</span>
-              </motion.button>
+
+                {/* Transliteration */}
+                {dua.transliteration && (
+                  <p className="text-sm text-muted-foreground italic">
+                    {dua.transliteration}
+                  </p>
+                )}
+
+                {/* Translation */}
+                <p className="text-lg md:text-xl text-foreground/90 font-heading leading-relaxed">
+                  "{dua.translation}"
+                </p>
+
+                {/* Occasion Badge */}
+                <div className="flex justify-center">
+                  <span className="px-4 py-2 rounded-full bg-secondary/50 text-sm text-muted-foreground">
+                    {dua.occasion}
+                  </span>
+                </div>
+              </motion.div>
+
+              {/* Side Actions */}
+              <div className="absolute right-4 bottom-1/3 flex flex-col gap-6">
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => toggleSave(actualDuaId)}
+                  className="flex flex-col items-center gap-1"
+                >
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-colors ${
+                    isSaved 
+                      ? 'bg-primary/20 text-primary' 
+                      : 'bg-secondary/50 text-foreground'
+                  }`}>
+                    <Heart className={`w-6 h-6 ${isSaved ? 'fill-current' : ''}`} />
+                  </div>
+                  <span className="text-xs text-muted-foreground">Save</span>
+                </motion.button>
+
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => handleBackstory(dua)}
+                  className="flex flex-col items-center gap-1"
+                >
+                  <div className="w-12 h-12 rounded-full bg-secondary/50 flex items-center justify-center">
+                    <BookOpen className="w-6 h-6 text-foreground" />
+                  </div>
+                  <span className="text-xs text-muted-foreground">Story</span>
+                </motion.button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Navigation Hint */}

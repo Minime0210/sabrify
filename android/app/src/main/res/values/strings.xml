@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sabrify</string>
+    <string name="title_activity_main">Sabrify</string>
+    <string name="package_name">com.minime0210.sabrify</string>
+    <string name="custom_url_scheme">com.minime0210.sabrify</string>
+</resources>
